@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\HomeController;
+use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -25,7 +26,18 @@ Route::post('/password/verify-otp', [ResetPasswordController::class, 'verifyOtp'
 Route::get('/password/reset', [ResetPasswordController::class, 'showResetForm'])->name('password.reset.form');
 Route::post('/password/reset', [ResetPasswordController::class, 'resetPassword'])->name('password.reset');
 
-// Protect admin dashboard with auth middleware
+
 Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('locale/{lang}', function($lang){
+    if (in_array($lang, ['en','sw'])) {
+        session(['locale' => $lang]);
+    }
+    return redirect()->back();
+})->name('locale.switch');
+
 });
+
+

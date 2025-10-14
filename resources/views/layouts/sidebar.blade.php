@@ -6,7 +6,7 @@
     </div>
 
     <ul>
-        <li class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+        <li class="{{ request()->routeIs('dashboard.admin') ? 'active' : '' }}">
             <a href="{{ route('dashboard.admin') }}">
                 <i class="fas fa-home"></i> Dashboard
             </a>

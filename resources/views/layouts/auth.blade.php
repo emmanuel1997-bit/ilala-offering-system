@@ -69,6 +69,16 @@
         font-size: 17px;
     }
 
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        color: #6b7280;
+        cursor: pointer;
+        font-size: 17px;
+    }
+
     .btn-success {
         background-color: #157347;
         border: none;
@@ -88,16 +98,6 @@
         background-color: #fee2e2;
         color: #b91c1c;
         border-left: 4px solid #ef4444;
-        padding: 10px 14px;
-        margin-bottom: 12px;
-        border-radius: 6px;
-        font-size: 0.95rem;
-    }
-
-    .alert-success {
-        background-color: #dcfce7;
-        color: #166534;
-        border-left: 4px solid #22c55e;
         padding: 10px 14px;
         margin-bottom: 12px;
         border-radius: 6px;
@@ -124,24 +124,21 @@
     }
 </style>
 
-<div class="login-wrapper w-full flex justify-center px-6">
-    <div class="login-card w-full max-w-[900px]">
-
+<div class="login-wrapper">
+    <div class="login-card">
         <div class="text-center mb-4">
             <img src="{{ asset('storage/images/steward.png') }}" alt="Ilala SDA Logo" class="logo mx-auto">
             <h3 class="text-2xl font-bold">Ilala SDA Church</h3>
             <p class="text-gray-500 mb-1">Offering Management System</p>
-            <h4 class="text-green-700 font-semibold mt-3">Reset Your Password</h4>
+            <h4 class="text-green-700 font-semibold mt-3">Login to Continue</h4>
         </div>
 
-        {{-- ✅ Success Message --}}
-        @if(session('message'))
-            <div class="alert-success text-center">
-                {{ session('message') }}
+        @if(session('error'))
+            <div class="alert-danger text-center">
+                {{ session('error') }}
             </div>
         @endif
 
-        {{-- ❌ Error Messages --}}
         @if($errors->any())
             <div class="alert-danger">
                 <ul class="list-disc list-inside mb-0">
@@ -152,23 +149,34 @@
             </div>
         @endif
 
-        {{-- ✅ Reset Form --}}
-        <form method="POST" action="{{ route('password.email.send') }}">
+        <form method="POST" action="{{ route('login') }}">
             @csrf
-
             <div class="input-group">
                 <i class="fa fa-envelope input-icon"></i>
-                <input type="email" name="email" id="email" placeholder="Enter your email address" required autofocus>
+                <input type="email" name="email" id="email" placeholder="Enter your email" required autofocus>
             </div>
 
-            <button type="submit" class="btn-success w-full text-white">
-                Send OTP
-            </button>
+            <div class="input-group">
+                <i class="fa fa-lock input-icon"></i>
+                <input type="password" name="password" id="password" placeholder="Enter your password" required>
+                <i class="fa fa-eye toggle-password" id="togglePassword"></i>
+            </div>
+
+            <button type="submit" class="btn-success w-full text-white">Login</button>
         </form>
 
         <div class="text-center mt-4 space-y-1">
-            <a href="{{ route('login') }}" class="text-link">← Back to Login</a>
+            <a href="{{ route('password.email.form') }}" class="text-link">Forgot Password?</a>
         </div>
     </div>
 </div>
+<script>
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    togglePassword.addEventListener('click', function () {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
 @endsection

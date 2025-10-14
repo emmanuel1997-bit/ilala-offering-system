@@ -1,54 +1,153 @@
-
 @extends('layouts.app')
 
 @section('content')
 <style>
     body {
-        background: url('https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrZqwfw7GQHmzNyuzmE043c4SmasHfTnIYRHmvtpzHL8uKqGe7mXIvxVFLxcUwTlrllevGwxldDS2AjRB59OAeCCSB52Q9emZSCzF336-AJgWo2lbwxdJGneFJwDEMOZt5C1sQxXA=s1360-w1360-h1020-rw') no-repeat center center fixed;
+        background: url('https://lh3.googleusercontent.com/gps-cs-s/AC9h4nrZqwfw7GQHmzNyuzmE043c4SmasHfTnIYRHmvtpzHL8uKqGe7mXIvxVFLxcUwTlrllevGwxldDS2AjRB59OAeCCSB52Q9emZSCzF336-AJgWo2lbwxdJGneFJwDEMOZt5C1sQxXA=s1360-w1360-h1020-rw')
+                    no-repeat center center fixed;
         background-size: cover;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 40px 20px;
+        backdrop-filter: blur(4px);
+    }
+
     .login-card {
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.96);
         border-radius: 20px;
-        padding: 40px 30px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        padding: 50px 45px;
+        box-shadow: 0 8px 35px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+        width: 100%;
+        max-width: 460px;
     }
-    .login-card h3, .login-card h4 {
+
+    .login-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    .login-card h3 {
         font-weight: 700;
+        color: #157347;
     }
-    .form-control:focus {
-        box-shadow: none;
-        border-color: #0d6efd;
+
+    .input-group {
+        position: relative;
+        margin-bottom: 22px;
     }
-    .btn-primary {
+
+    .input-group input {
+        width: 100%;
+        padding: 12px 45px 12px 45px;
+        border: 1px solid #d1d5db;
+        border-radius: 10px;
+        font-size: 15px;
+        outline: none;
+        transition: all 0.2s ease;
+        background-color: #f9fafb;
+        text-align: center;
+        letter-spacing: 4px;
+        font-weight: 600;
+    }
+
+    .input-group input:focus {
+        border-color: #157347;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 2px rgba(21, 115, 71, 0.15);
+    }
+
+    .input-icon {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        transform: translateY(-50%);
+        color: #6b7280;
+        font-size: 17px;
+    }
+
+    .btn-success {
         background-color: #157347;
         border: none;
         font-weight: 600;
+        font-size: 16px;
+        transition: all 0.25s ease;
+        padding: 12px;
+        border-radius: 10px;
     }
-    .btn-primary:hover {
-        background-color: #157347;
+
+    .btn-success:hover {
+        background-color: #0f5a32;
+        transform: scale(1.02);
+    }
+
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #b91c1c;
+        border-left: 4px solid #ef4444;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .alert-success {
+        background-color: #dcfce7;
+        color: #166534;
+        border-left: 4px solid #22c55e;
+        padding: 10px 14px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .text-link {
+        color: #157347;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .text-link:hover {
+        text-decoration: underline;
+        color: #0f5a32;
+    }
+
+    .logo {
+        height: 120px;
+        width: 120px;
+        border-radius: 50%;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        margin-bottom: 12px;
     }
 </style>
 
-<div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="login-card" style="width: 100%; max-width: 400px;">
+<div class="login-wrapper w-full flex justify-center px-6">
+    <div class="login-card w-full max-w-[900px]">
+
         <div class="text-center mb-4">
-            <img src="{{ asset('storage/images/steward.png') }}" alt="Ilala SDA Logo" class="img-fluid" style="height: 80px;">
-            <h3 class="mt-3">Ilala SDA Church</h3>
-            <p class="text-muted">Offering Management System</p>
-            <h4 class="mt-2">Verify OTP</h4>
+            <img src="{{ asset('storage/images/steward.png') }}" alt="Ilala SDA Logo" class="logo mx-auto">
+            <h3 class="text-2xl font-bold">Ilala SDA Church</h3>
+            <p class="text-gray-500 mb-1">Offering Management System</p>
+            <h4 class="text-green-700 font-semibold mt-3">Verify Your OTP</h4>
         </div>
 
+        {{-- ✅ Success Message --}}
         @if(session('message'))
-            <div class="alert alert-success">
+            <div class="alert-success text-center">
                 {{ session('message') }}
             </div>
         @endif
 
+        {{-- ❌ Error Messages --}}
         @if($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
+            <div class="alert-danger">
+                <ul class="list-disc list-inside mb-0">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -56,22 +155,22 @@
             </div>
         @endif
 
+        {{-- ✅ OTP Verification Form --}}
         <form method="POST" action="{{ route('password.otp.verify') }}">
             @csrf
-            <div class="mb-3">
-                <label for="otp" class="form-label fw-semibold">OTP</label>
-                <input type="text" name="otp" id="otp" class="form-control" maxlength="6" placeholder="Enter OTP" required>
+            <div class="input-group">
+                <i class="fa fa-key input-icon"></i>
+                <input type="text" name="otp" id="otp" maxlength="6" placeholder="Enter OTP Code" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100 fw-bold">Verify OTP</button>
+
+            <button type="submit" class="btn-success w-full text-white">
+                Verify OTP
+            </button>
         </form>
 
-        <div class="text-center mt-3">
-            <a href="{{ route('password.email.form') }}" class="text-decoration-none">Back to Email</a>
+        <div class="text-center mt-4 space-y-1">
+            <a href="{{ route('password.email.form') }}" class="text-link">← Back to Email</a>
         </div>
     </div>
 </div>
 @endsection
-
-
-
-

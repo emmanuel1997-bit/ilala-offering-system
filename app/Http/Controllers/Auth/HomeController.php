@@ -83,7 +83,7 @@ class HomeController extends Controller
 
         session()->forget('otp_user_id');
 
-        return redirect()->route('home');
+        return redirect()->route('dashboard.admin');
     }
     public function logout(Request $request)
     {
