@@ -71,7 +71,54 @@
             color: #157347;
             font-weight: 600;
         }
+.modal .form-control {
+    background-color: #fff !important;
+    color: #000 !important;
+    border: 2px solid #ccc !important;
+}
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    cursor: pointer;
+    accent-color: #064e3b; /* Dark green accent */
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
 
+.modal label {
+    color: #064e3b !important;
+    font-weight: 500;
+}
+
+.modal-content {
+    background-color: #fefefe !important;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+    .nav-pills .nav-link {
+        font-weight: 400;
+        font-size: 1rem;
+        border-radius: 0.5rem;
+        transition: background 0.2s;
+        color: #222 !important;
+        background: #fff;
+    }
+    .nav-pills .nav-link.active {
+        background: #064e3b !important;
+        color: #fff !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .card-header {
+        background: #f8f9fa;
+    }
+    .btn-primary {
+        background-color: #064e3b !important;
+        border-color: #064e3b !important;
+    }
+
+.modal-backdrop.show {
+    opacity: 0.7;
+}
         /* ===================== Top App Bar ===================== */
         .top-bar {
             position: fixed;

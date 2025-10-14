@@ -19,26 +19,56 @@ class UserController extends Controller {
  
 
     public function store(Request $request) {
+
+        echo json_encode($request->all());
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => 'required|string|min:6',
+            'phone'=>'required|string|max:255',
             'roles' => 'required|array'
         ]);
-
+      
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'phone'=>$request->phone,
             'password' => Hash::make($request->password),
         ]);
 
-        $user->roles()->attach($request->roles);
+        $user->roles()->sync($request->roles);
 
         return redirect()->route('users.index')->with('success', 'User created successfully!');
     }
 
+    
+    public function update(Request $request, $id)
+{
+    $user = User::findOrFail($id);
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'password' => 'nullable|string|min:6|confirmed',
+        'phone' => 'required|string|max:255',
+        'roles' => 'required|array'
+    ]);
+    $user->name = $request->name;
+    $user->email = $request->email;
+    $user->phone = $request->phone;
+
+    if ($request->filled('password')) {
+        $user->password = Hash::make($request->password);
+    }
+
+    $user->save();
+    $user->roles()->sync($request->roles);
+
+    return redirect()->route('users.index')->with('success', 'User updated successfully!');
+}
+
+
     public function destroy(User $user) {
-        $user->delete();
+        // $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully!');
     }
    public function createRole(Request $request)
@@ -48,6 +78,7 @@ class UserController extends Controller {
         'permissions' => 'array', 
         'permissions.*' => 'exists:permissions,id'
     ]);
+    echo json_encode($request->all());
     $role = Role::create([
         'name' => $request->name
     ]);
@@ -60,14 +91,14 @@ class UserController extends Controller {
 
 public function updateRole(Request $request, Role $role)
     {
+
+        
         $request->validate([
             'name' => 'required|unique:roles,name,' . $role->id,
             'permissions' => 'array'
         ]);
-
         $role->update(['name' => $request->name]);
-        $role->permissions()->sync($request->permissions ?? []);
-
+        $role->permissions()->sync($request->permissions);
         return redirect()->back()->with('success', 'Role updated successfully.');
     }
 

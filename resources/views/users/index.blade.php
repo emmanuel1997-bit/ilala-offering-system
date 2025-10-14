@@ -83,7 +83,7 @@
                                             </td>
                                             <td>
                                                <td>
-                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editRoleModal-{{ $role->id }}">
+                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editRoleModal-{{ $role->id}}">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </button>
                                                 <form action="{{ route('roles.destroy', $role->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
@@ -116,6 +116,7 @@
                                             <th>#</th>
                                             <th>Name</th>
                                             <th>Email</th>
+                                             <th>Phone</th>
                                             <th>Roles</th>
                                             <th>Action</th>
                                         </tr>
@@ -126,24 +127,27 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
+                                            <td>{{ @$user->phone }}</td>
                                             <td>
                                                 {{ 
                                             $user->roles->pluck('name')->join(', ') 
                                             }}
                                             </td>
                                            <td>
-    <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#assignRoleModal-{{ $user->id }}">
-        <i class="fas fa-user-plus"></i> Assign/Unassign Roles
-    </button>
+                                           <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editUserModal-{{ $user->id }}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
 
-    <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-        @csrf
-        @method('DELETE')
-        <button class="btn btn-danger btn-sm">
-            <i class="fas fa-trash"></i>
-        </button>
-    </form>
-</td>
+
+
+                                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
 
                                         </tr>
                                         @endforeach
@@ -196,12 +200,64 @@
         </form>
     </div>
 </div>
-//edit  role  model
+
+
+@foreach($users as $user)
+<div class="modal fade" id="editUserModal-{{ $user->id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{{ route('users.update', $user->id) }}" method="POST" class="modal-content">
+            @csrf
+            @method('PUT')
+            <div class="modal-header">
+                <h5 class="modal-title">Edit User: {{ $user->name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Name -->
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" value="{{ $user->email }}" class="form-control" required>
+                </div>
+                 <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="number" name="phone" value="{{ $user->phone }}" class="form-control" required>
+                </div>
+                <!-- Roles -->
+                <div class="mb-3">
+                    <label class="form-label">Roles</label>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach($roles as $role)
+                        <label class="form-check-label border p-2 rounded d-flex align-items-center" style="gap:0.5rem;">
+                            <input type="checkbox" name="roles[]" value="{{ $role->id }}"
+                                class="form-check-input"
+                                {{ $user->roles->contains($role->id) ? 'checked' : '' }}>
+                            {{ $role->name }}
+                        </label>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update User</button>
+            </div>
+        </form>
+    </div>
+</div>
+@endforeach
+
+
 
 @foreach($roles as $role)
 <div class="modal fade" id="editRoleModal-{{ $role->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ route('roles.update', $role->id) }}" method="POST" class="modal-content">
+        <form action="{{ route('roles.update', $role) }}" method="POST" class="modal-content">
             @csrf
             <div class="modal-header">
                 <h5 class="modal-title">Edit Role: {{ $role->name }}</h5>
@@ -236,6 +292,7 @@
 @endforeach
 
 
+
 @foreach($users as $user)
 <div class="modal fade" id="assignRoleModal-{{ $user->id }}" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -267,7 +324,7 @@
 @endforeach
 
 
-<!-- Create User Modal -->
+ <!-- Create User Modal -->
 <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form action="{{ route('users.store') }}" method="POST" class="modal-content">
@@ -286,13 +343,19 @@
                     <input type="email" name="email" class="form-control" required>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="number" name="phone" class="form-control" required>
+                </div>
+               <div class="mb-3">
                     <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required>
+                    <input type="password" id="password" name="password" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Confirm Password</label>
-                    <input type="password" name="password_confirmation" class="form-control" required>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required>
+                    <div id="password-error" class="text-danger mt-1" style="display:none;">Passwords do not match.</div>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label">Assign Roles</label>
                     <div class="d-flex flex-wrap gap-2">
@@ -313,94 +376,23 @@
     </div>
 </div>
 
-<div class="modal fade" id="assignRoleModal-{{ $role->id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form action="{{ route('roles.assignToUser', $role->id) }}" method="POST" class="modal-content">
-            @csrf
-            <div class="modal-header">
-                <h5 class="modal-title">Assign Role: {{ $role->name }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <label class="form-label">Select Users</label>
-                <div class="d-flex flex-column gap-2">
-                    @foreach($users as $user)
-                    <label class="form-check-label border p-2 rounded">
-                        <input type="checkbox" name="users[]" value="{{ $user->id }}" class="form-check-input me-1"
-                            @if($user->roles->contains($role->id)) checked @endif>
-                        {{ $user->name }} ({{ $user->email }})
-                    </label>
-                    @endforeach
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Assign</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Assign Roles</label>
-    <div class="d-flex flex-wrap gap-2">
-        @foreach($roles as $role)
-        <label class="form-check-label border p-2 rounded">
-            <input type="checkbox" name="roles[]" value="{{ $role->id }}" class="form-check-input me-1"
-                @if(old('roles') && in_array($role->id, old('roles'))) checked @endif>
-            {{ $role->name }}
-        </label>
-        @endforeach
-    </div>
-</div>
-
-<style>
-/* Fix invisible input fields in modal */
-.modal .form-control {
-    background-color: #fff !important;
-    color: #000 !important;
-    border: 1px solid #ccc !important;
-}
-
-.modal label {
-    color: #064e3b !important;
-    font-weight: 500;
-}
-
-.modal-content {
-    background-color: #fefefe !important;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-}
-
-.modal-backdrop.show {
-    opacity: 0.7;
-}
-</style>
 
 
-<style>
-    .nav-pills .nav-link {
-        font-weight: 400;
-        font-size: 1rem;
-        border-radius: 0.5rem;
-        transition: background 0.2s;
-        color: #222 !important;
-        background: #fff;
+
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('password_confirmation').value;
+    if(password !== confirm){
+        e.preventDefault();
+        document.getElementById('password-error').style.display = 'block';
+    } else {
+        document.getElementById('password-error').style.display = 'none';
     }
-    .nav-pills .nav-link.active {
-        background: #064e3b !important;
-        color: #fff !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    .card-header {
-        background: #f8f9fa;
-    }
-    .btn-primary {
-        background-color: #064e3b !important;
-        border-color: #064e3b !important;
-    }
-</style>
+});
+</script>
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const triggerTabList = [].slice.call(document.querySelectorAll('#userTab button'))

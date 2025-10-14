@@ -35,7 +35,7 @@ Route::post('/profile', [ProfileController::class, 'update'])->name('profile.upd
 Route::post('/roles/store', [UserController::class, 'createRole'])->name('roles.createRole');
 Route::post('/roles/delete', [UserController::class, 'deleteRole'])->name('roles.destroy');
 Route::post('/roles/assign{user}', [UserController::class, 'assignToUser'])->name('roles.assignToUser');
-Route::post('/roles/update', [UserController::class, 'updateRole'])->name('roles.update');
+Route::post('/roles/{role}/update', [UserController::class, 'updateRole'])->name('roles.update');
 
 Route::resource('users', UserController::class);
 
