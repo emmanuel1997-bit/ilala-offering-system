@@ -9,6 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Alpine.js for modal functionality -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
      <link rel="icon" href="{{ asset('storage/images/steward.png') }}" type="image/png">
 
     <style>
@@ -66,7 +68,7 @@
         }
 
         .sidebar ul li a:hover {
-            background-color: #236121;
+            /* background-color: #236121; */
         }
 
         .sidebar ul li.active > a {
