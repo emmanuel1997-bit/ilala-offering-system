@@ -59,3 +59,6 @@ jobs:
           sudo chown -R www-data:www-data /var/www/kuzasokoni.co.tz/public/contracts
           sudo chmod -R 775 /var/www/kuzasokoni.co.tz/public/contracts
 
+
+
+
