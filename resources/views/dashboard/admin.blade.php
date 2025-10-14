@@ -2,78 +2,30 @@
 
 @section('content')
 @php
+// Ministry Spend Example Data
 $ministrySpends = collect([
-    (object)[
-        'ministry' => 'Women Ministry',
-        'description' => 'Community outreach and events',
-        'amount' => 120000,
-        'date' => '2025-10-05',
-    ],
-    (object)[
-        'ministry' => 'Construction Ministry',
-        'description' => 'Church repairs and renovations',
-        'amount' => 250000,
-        'date' => '2025-10-02',
-    ],
-    (object)[
-        'ministry' => 'Youth Ministry',
-        'description' => 'Youth programs and camps',
-        'amount' => 90000,
-        'date' => '2025-10-08',
-    ],
-    (object)[
-        'ministry' => 'Music Ministry',
-        'description' => 'Choir instruments and training',
-        'amount' => 60000,
-        'date' => '2025-10-04',
-    ],
-    (object)[
-        'ministry' => 'Other',
-        'description' => 'Miscellaneous ministry activities',
-        'amount' => 40000,
-        'date' => '2025-10-06',
-    ],
+    (object)['ministry' => 'Women Ministry', 'description' => 'Community outreach and events', 'amount' => 120000, 'date' => '2025-10-05'],
+    (object)['ministry' => 'Construction Ministry', 'description' => 'Church repairs and renovations', 'amount' => 250000, 'date' => '2025-10-02'],
+    (object)['ministry' => 'Youth Ministry', 'description' => 'Youth programs and camps', 'amount' => 90000, 'date' => '2025-10-08'],
+    (object)['ministry' => 'Music Ministry', 'description' => 'Choir instruments and training', 'amount' => 60000, 'date' => '2025-10-04'],
+    (object)['ministry' => 'Other', 'description' => 'Miscellaneous ministry activities', 'amount' => 40000, 'date' => '2025-10-06'],
 ]);
-@endphp
 
-
-@php
+// Expenses Example Data
 $expenses = collect([
-    (object)[
-        'category' => 'Utilities',
-        'description' => 'Electricity bill',
-        'amount' => 45000,
-        'date' => '2025-10-01',
-    ],
-    (object)[
-        'category' => 'Maintenance',
-        'description' => 'Church repairs',
-        'amount' => 120000,
-        'date' => '2025-10-03',
-    ],
-    (object)[
-        'category' => 'Supplies',
-        'description' => 'Office stationery',
-        'amount' => 30000,
-        'date' => '2025-10-05',
-    ],
-    (object)[
-        'category' => 'Events',
-        'description' => 'Community outreach',
-        'amount' => 80000,
-        'date' => '2025-10-07',
-    ],
-    (object)[
-        'category' => 'Miscellaneous',
-        'description' => null,
-        'amount' => 20000,
-        'date' => '2025-10-09',
-    ],
+    (object)['category' => 'Utilities', 'description' => 'Electricity bill', 'amount' => 45000, 'date' => '2025-10-01'],
+    (object)['category' => 'Maintenance', 'description' => 'Church repairs', 'amount' => 120000, 'date' => '2025-10-03'],
+    (object)['category' => 'Supplies', 'description' => 'Office stationery', 'amount' => 30000, 'date' => '2025-10-05'],
+    (object)['category' => 'Events', 'description' => 'Community outreach', 'amount' => 80000, 'date' => '2025-10-07'],
+    (object)['category' => 'Miscellaneous', 'description' => null, 'amount' => 20000, 'date' => '2025-10-09'],
 ]);
+
+// Additional Offerings
+$campMeetingOffering = $campMeetingOffering ?? rand(5000,20000);
+$missionOffering = $missionOffering ?? rand(5000,20000);
 @endphp
 
 <div class="dashboard p-6 bg-gray-100 min-h-screen">
-
     <h2 class="text-3xl font-bold mb-6 text-green-700">Church Dashboard</h2>
 
     <!-- Date Filter -->
@@ -91,37 +43,35 @@ $expenses = collect([
         </div>
     </form>
 
-    <!-- Top Stats Cards with Gradients & Export -->
-    <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
+    <!-- Top Stats Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         @php
             $stats = [
-                ['title'=>'Total Tithes','value'=>$tithes ?? rand(10000,50000),'icon'=>'fas fa-donate','color'=>'from-green-600 to-green-700'],
-                ['title'=>'Total Offerings','value'=>$offerings ?? rand(5000,20000),'icon'=>'fas fa-hand-holding-dollar','color'=>'from-green-700 to-green-900'],
-                ['title'=>'Total Thanksgiving','value'=>$thanksgiving ?? rand(2000,15000),'icon'=>'fas fa-praying-hands','color'=>'from-yellow-500 to-yellow-800'],
-                ['title'=>'Other Income','value'=>$otherIncome ?? rand(2000,15000),'icon'=>'fas fa-money-bill-wave','color'=>'from-gray-500 to-gray-700'],
-                ['title'=>'Expenses','value'=>$totalExpenses ?? rand(1000,10000),'icon'=>'fas fa-file-invoice-dollar','color'=>'from-red-600 to-red-800'],
-                ['title'=>'Remaining Balance','value'=>($tithes ?? rand(10000,50000))+($offerings ?? rand(5000,20000))+($thanksgiving ?? rand(2000,15000))+($otherIncome ?? rand(2000,15000))-($totalExpenses ?? rand(1000,10000))-($conferenceFund ?? rand(5000,30000)),'icon'=>'fas fa-wallet','color'=>'from-blue-400 to-blue-700'],
+                ['title'=>'Total Tithes','value'=>$tithes ?? rand(10000,50000),'icon'=>'fas fa-donate','color'=>'from-green-800 to-green-600'],
+                ['title'=>'Total Offerings','value'=>$offerings ?? rand(5000,20000),'icon'=>'fas fa-hand-holding-dollar','color'=>'from-green-900 to-green-700'],
+                ['title'=>'Camp Meeting Offering','value'=>$campMeetingOffering,'icon'=>'fas fa-campground','color'=>'from-teal-800 to-teal-600'],
+                ['title'=>'Mission Offering','value'=>$missionOffering,'icon'=>'fas fa-globe','color'=>'from-orange-800 to-orange-600'],
+                ['title'=>'Total Thanksgiving','value'=>$thanksgiving ?? rand(2000,15000),'icon'=>'fas fa-praying-hands','color'=>'from-yellow-800 to-yellow-500'],
+                ['title'=>'Other Income','value'=>$otherIncome ?? rand(2000,15000),'icon'=>'fas fa-money-bill-wave','color'=>'from-gray-800 to-gray-500'],
+                ['title'=>'Expenses','value'=>$totalExpenses ?? rand(1000,10000),'icon'=>'fas fa-file-invoice-dollar','color'=>'from-red-800 to-red-500'],
+                ['title'=>'Remaining Balance','value'=>($tithes ?? 0)+($offerings ?? 0)+$campMeetingOffering+$missionOffering+($thanksgiving ?? 0)+($otherIncome ?? 0)-($totalExpenses ?? 0)-($conferenceFund ?? 0),'icon'=>'fas fa-wallet','color'=>'from-blue-700 to-blue-400'],
             ];
         @endphp
 
         @foreach($stats as $stat)
-        <div class="text-white rounded-xl shadow-lg p-4 flex flex-col justify-between bg-gradient-to-r {{ $stat['color'] }} relative overflow-hidden">
-        <div>
-            <h3 class="font-semibold text-base">{{ $stat['title'] }}</h3>
-            <p class="text-xl font-bold mt-1">{{ $stat['value'] }} TZS</p>
-        </div>
-
-        <!-- Icon and Export Button on the Same Line -->
-        <div class="mt-4 flex justify-between items-center">
-            <i class="{{ $stat['icon'] }} text-xl"></i>
-            <button onclick="exportToExcel('{{ $stat['title'] }}', '{{ $stat['value'] }}')"
-                    class="bg-white text-gray-700 rounded px-3 py-1 text-sm hover:bg-gray-100 transition">
-                Export Excel
-            </button>
-        </div>
-        </div>
-
-
+            <div class="text-white rounded-xl shadow-lg p-4 flex flex-col justify-between bg-gradient-to-r {{ $stat['color'] }} relative overflow-hidden">
+                <div>
+                    <h3 class="font-semibold text-base">{{ $stat['title'] }}</h3>
+                    <p class="text-xl font-bold mt-1">{{ number_format($stat['value']) }} TZS</p>
+                </div>
+                <div class="mt-4 flex justify-between items-center">
+                    <i class="{{ $stat['icon'] }} text-xl"></i>
+                    <button onclick="exportToExcel('{{ $stat['title'] }}', '{{ $stat['value'] }}')"
+                            class="bg-white text-gray-700 rounded px-3 py-1 text-sm hover:bg-gray-100 transition">
+                        Export Excel
+                    </button>
+                </div>
+            </div>
         @endforeach
     </div>
 
@@ -149,71 +99,86 @@ $expenses = collect([
         <canvas id="trendingChart" class="w-full" style="height:300px;"></canvas>
     </div>
 
-
- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-    <!-- Recent Expenses -->
-    <div class="bg-white rounded-xl shadow-lg p-4">
-        <h3 class="text-lg font-semibold mb-3 text-green-700">Recent Expenses</h3>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-green-700 text-white">
-                    <tr>
-                        <th class="px-3 py-2 text-left text-sm font-medium">#</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Category</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Description</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Amount (TZS)</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Date</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($expenses ?? [] as $i => $expense)
+    <!-- Expenses & Ministry Spend -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <!-- Recent Expenses -->
+        <div class="bg-white rounded-xl shadow-lg p-4">
+            <h3 class="text-lg font-semibold mb-3 text-green-700">Recent Expenses</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-green-700 text-white">
                         <tr>
-                            <td class="px-3 py-2">{{ $i+1 }}</td>
-                            <td class="px-3 py-2">{{ $expense->category }}</td>
-                            <td class="px-3 py-2">{{ $expense->description ?? '-' }}</td>
-                            <td class="px-3 py-2">{{ number_format($expense->amount, 0, '.', ',') }}</td>
-                            <td class="px-3 py-2">{{ \Carbon\Carbon::parse($expense->date)->format('d/m/Y') }}</td>
+                            <th class="px-3 py-2 text-left text-sm font-medium">#</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Category</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Description</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Amount (TZS)</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Date</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($expenses ?? [] as $i => $expense)
+                            <tr>
+                                <td class="px-3 py-2">{{ $i+1 }}</td>
+                                <td class="px-3 py-2">{{ $expense->category }}</td>
+                                <td class="px-3 py-2">{{ $expense->description ?? '-' }}</td>
+                                <td class="px-3 py-2">{{ number_format($expense->amount, 0, '.', ',') }}</td>
+                                <td class="px-3 py-2">{{ \Carbon\Carbon::parse($expense->date)->format('d/m/Y') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <!-- Ministry Spend -->
-    <div class="bg-white rounded-xl shadow-lg p-4">
-        <h3 class="text-lg font-semibold mb-3 text-green-700">Ministry Spend</h3>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-green-700 text-white">
-                    <tr>
-                        <th class="px-3 py-2 text-left text-sm font-medium">#</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Ministry</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Description</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Amount (TZS)</th>
-                        <th class="px-3 py-2 text-left text-sm font-medium">Date</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @foreach($ministrySpends as $i => $spend)
+        <!-- Ministry Spend -->
+        <div class="bg-white rounded-xl shadow-lg p-4">
+            <h3 class="text-lg font-semibold mb-3 text-green-700">Ministry Spend</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-green-700 text-white">
                         <tr>
-                            <td class="px-3 py-2">{{ $i+1 }}</td>
-                            <td class="px-3 py-2">{{ $spend->ministry }}</td>
-                            <td class="px-3 py-2">{{ $spend->description ?? '-' }}</td>
-                            <td class="px-3 py-2">{{ number_format($spend->amount, 0, '.', ',') }}</td>
-                            <td class="px-3 py-2">{{ \Carbon\Carbon::parse($spend->date)->format('d/m/Y') }}</td>
+                            <th class="px-3 py-2 text-left text-sm font-medium">#</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Ministry</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Description</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Amount (TZS)</th>
+                            <th class="px-3 py-2 text-left text-sm font-medium">Date</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @foreach($ministrySpends as $i => $spend)
+                            <tr>
+                                <td class="px-3 py-2">{{ $i+1 }}</td>
+                                <td class="px-3 py-2">{{ $spend->ministry }}</td>
+                                <td class="px-3 py-2">{{ $spend->description ?? '-' }}</td>
+                                <td class="px-3 py-2">{{ number_format($spend->amount, 0, '.', ',') }}</td>
+                                <td class="px-3 py-2">{{ \Carbon\Carbon::parse($spend->date)->format('d/m/Y') }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
 
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Charts and Export logic remain same as before
+    function exportToExcel(title, value) {
+        const table = `<table>
+            <tr><th>${title}</th></tr>
+            <tr><td>${value}</td></tr>
+        </table>`;
+        const blob = new Blob([table], { type: 'application/vnd.ms-excel' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${title}.xls`;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+</script>
 
 <script>
     // Finance Bar Chart

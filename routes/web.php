@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\HomeController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Auth\SettingController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\UserController;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -31,6 +32,11 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::post('/roles/store', [UserController::class, 'createRole'])->name('roles.createRole');
+Route::post('/roles/delete', [UserController::class, 'deleteRole'])->name('roles.destroy');
+Route::post('/roles/assign{user}', [UserController::class, 'assignToUser'])->name('roles.assignToUser');
+Route::post('/roles/update', [UserController::class, 'updateRole'])->name('roles.update');
+
 Route::resource('users', UserController::class);
 
 Route::resource('members', MemberController::class);
@@ -43,6 +49,7 @@ Route::resource('ministries', MinistryController::class);
 Route::resource('receipts', ReceiptController::class);
 Route::resource('messages', MessageController::class);
 Route::resource('settings', SettingController::class);
+
 Route::resource('users', UserController::class);
 
 

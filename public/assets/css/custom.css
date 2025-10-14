@@ -1,0 +1,22 @@
+.li-active{
+    background-color: #17409E;
+    color: #fff !important;
+    border-radius: 20px;
+    margin: 0px 3px 0px 3px;
+}
+.li-active i{
+    color: #fff;
+}
+.li-active .bx:hover{
+    color: #fff;
+}
+.li-active:hover{
+    color: #fff;
+}
+.divider{
+margin-top: 10px !important;
+}
+
+.sub-li:hover{
+    color: #17409E !important;
+}

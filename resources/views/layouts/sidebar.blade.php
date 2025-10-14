@@ -98,12 +98,13 @@
         <div class="border-t border-green-700 my-4 mx-4"></div>
 
         <!-- Users -->
-        <li class="{{ request()->routeIs('users.index') ? 'bg-green-600 text-white font-bold shadow-lg' : '' }} hover:bg-green-500 transition-all duration-200 rounded-md mt-2">
-            <a href="{{ route('users.index') }}" class="flex items-center px-4 py-2">
-                <i class="fas fa-users w-5"></i>
-                <span class="ml-3">Users</span>
-            </a>
-        </li>
+      <li class="{{ request()->routeIs('users.*') ? 'bg-green-600 text-white font-bold shadow-lg' : '' }} hover:bg-green-500 transition-all duration-200 rounded-md mt-2">
+    <a href="{{ route('users.index') }}" class="flex items-center px-4 py-2">
+        <i class="fas fa-briefcase w-5"></i>
+        <span class="ml-3">Management</span>
+    </a>
+</li>
+
 
         <!-- Logout -->
         <li class="hover:bg-green-500 transition-all duration-200 mt-2 rounded-md">
@@ -113,7 +114,7 @@
                 <i class="fas fa-sign-out-alt w-5"></i>
                 <span class="ml-3">Logout</span>
             </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+            <form id="logout-form" action="{{ route('logout') }}"  class="hidden">
                 @csrf
             </form>
         </li>

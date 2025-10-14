@@ -1,0 +1,67 @@
+    .text-right{
+        display: flex;
+        justify-content: flex-end;
+        align-content: center;
+    }
+    .form-div-divider{
+        margin-top: 20px;
+    }
+    .step{
+        display: flex;
+        background-color: rgba(85,110,230,.1);
+        width: 25%;
+        height: 50px;
+        align-items: center;
+        cursor: pointer;
+        
+
+    }
+    .main-step-header{
+        display: flex;
+        justify-content: space-evenly;
+        margin-bottom: 20px;
+    }
+    .step-icon{
+        display: flex;
+        border: 1px solid #2A3042 !important;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+    }
+    .icon-size{
+       font-size: 30px;
+       color: #2A3042;
+    }
+    .step-text-div{
+        margin-left: 15px;
+    }
+    .step-text{
+        font-size: 16px;
+        color: #555CA7 !important;
+    }
+    .active-step{
+        background-color: #283891;
+        opacity: 0.8;
+    }
+    .active-icon-size{
+        color: #fff;
+    }
+    .active-step-icon{
+        border: 1px solid #fff !important;
+    }
+    .active-step-text{
+        color: #fff !important;
+    }
+    .main-card-header{
+        background-color: #EEF0FC;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 1px solid #555CA7;
+        color: #555CA7;
+        font-size: 200px !important; 
+    }
