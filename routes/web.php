@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SettingController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\UserController;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +37,7 @@ Route::post('/roles/store', [UserController::class, 'createRole'])->name('roles.
 Route::post('/roles/delete', [UserController::class, 'deleteRole'])->name('roles.destroy');
 Route::post('/roles/assign{user}', [UserController::class, 'assignToUser'])->name('roles.assignToUser');
 Route::post('/roles/{role}/update', [UserController::class, 'updateRole'])->name('roles.update');
-
+Route::get('/user/settings', [UserController::class, 'settings'])->name('users.settings');
 Route::resource('users', UserController::class);
 
 Route::resource('members', MemberController::class);
@@ -52,6 +53,7 @@ Route::resource('settings', SettingController::class);
 
 Route::resource('users', UserController::class);
 
+Route::get('/receipt', [PdfController::class, 'generateReceipt']);
 
 Route::get('locale/{lang}', function($lang){
     if (in_array($lang, ['en','sw'])) {

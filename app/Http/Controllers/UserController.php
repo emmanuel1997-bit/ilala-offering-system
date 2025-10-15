@@ -11,12 +11,20 @@ class UserController extends Controller {
 
  public function index() {
     $users = User::with('roles')->get();
-    $roles = \App\Models\Role::all();  
-    return view('users.index', compact('users', 'roles')); 
+    $roles = \App\Models\Role::all();
+    return view('users.index', compact('users', 'roles'));
 }
 
 
- 
+
+  public function settings() {
+    $ministries = User::with('roles')->get();
+    $contributions = \App\Models\Role::all();
+    $messages = \App\Models\Role::all();
+     $expenses = \App\Models\Role::all();
+    return view('users.settings', compact('ministries', 'contributions', 'messages', 'expenses'));
+}
+
 
     public function store(Request $request) {
 
@@ -28,7 +36,7 @@ class UserController extends Controller {
             'phone'=>'required|string|max:255',
             'roles' => 'required|array'
         ]);
-      
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -41,7 +49,7 @@ class UserController extends Controller {
         return redirect()->route('users.index')->with('success', 'User created successfully!');
     }
 
-    
+
     public function update(Request $request, $id)
 {
     $user = User::findOrFail($id);
@@ -75,7 +83,7 @@ class UserController extends Controller {
 {
     $request->validate([
         'name' => 'required|string|unique:roles,name',
-        'permissions' => 'array', 
+        'permissions' => 'array',
         'permissions.*' => 'exists:permissions,id'
     ]);
     echo json_encode($request->all());
@@ -92,7 +100,7 @@ class UserController extends Controller {
 public function updateRole(Request $request, Role $role)
     {
 
-        
+
         $request->validate([
             'name' => 'required|unique:roles,name,' . $role->id,
             'permissions' => 'array'
