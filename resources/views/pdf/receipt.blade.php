@@ -2,7 +2,9 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Receipt No. {{ $receipt['number'] }}</title>
+    <title> {{ now()->format('Y-m-d ') }}</title>
+     <link rel="icon" href="{{ asset('storage/images/steward.png') }}" type="image/png">
+    
     <style>
         @page {
             size: A4;
@@ -150,8 +152,8 @@
                 <p><strong>Jumla ya fedha kwa maneno:</strong></p>
                 <p>{{ $receipt['amount_words'] }}</p>
                 <div class="signature">
-                    <p><strong>Sahihi:</strong></p>
-                    <p><strong>Tarehe:</strong> {{ $receipt['date'] }}</p>
+                    <p><strong>Sahihi:</strong></p>     <img src="{{ public_path('images/signature.png') }}" alt="SDA Logo">
+                    <p><strong>Tarehe:</strong> {{ now()->format('Y-m-d') }}</p>
                 </div>
             </div>
 

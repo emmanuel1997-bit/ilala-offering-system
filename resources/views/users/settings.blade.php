@@ -191,67 +191,69 @@
                             @endif
                         </div>
 
-                        {{-- ========================== MESSAGES SECTION ========================== --}}
-                        <div class="tab-pane fade" id="messages-section" role="tabpanel" aria-labelledby="messages-tab">
-                            @if(auth()->user()->hasPermission('Messages'))
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="fw-bold text-dark">Messages</h5>
-                                <button class="btn text-white btn-sm" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#createMessageModal">
-                                    <i class="fas fa-envelope me-1"></i> New Message
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Title</th>
-                                            <th>Recipient</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($messages as $msg)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $msg->title }}</td>
-                                            <td>{{ $msg->recipient }}</td>
-                                            <td>
-                                                <a href="{{ route('messages.show', $msg->id) }}" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
-                                                <form action="{{ route('messages.destroy', $msg->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
-                        </div>
+                       {{-- ========================== RECEIPT MESSAGE TEMPLATE SECTION ========================== --}}
+<div class="tab-pane fade" id="messages-section" role="tabpanel" aria-labelledby="messages-tab">
+    @if(auth()->user()->hasPermission('Messages'))
+        <h5 class="fw-bold text-dark mb-3">Receipt Message Template</h5>
+
+        {{-- Info about placeholders --}}
+        <div class="alert alert-info">
+            <strong>Available placeholders:</strong>
+            <code>{name}</code>, <code>{zaka}</code>, <code>{sadaka}</code>,
+            <code>{makambi}</code>, <code>{shukrani}</code>, <code>{mchango}</code>
+        </div>
+
+        {{-- Template Form --}}
+        <form action="
+        {{-- {{ route('settings.receipt.message.update') }} --}}
+         " class="form-control" method="POST">
+            @csrf
+            
+            <div class="mb-3">
+                <label for="receipt_message" class="form-label">Receipt Message</label>
+                <!-- Inline styles to ensure text is visible regardless of global/theme CSS -->
+                <textarea name="receipt_message" id="receipt_message" class="form-control" rows="6" required
+                    style="color:#000 !important; background-color:#fff !important;">
+                    {{ $receiptMessage ?? "Shukrani {name} kwa mchango wako wa mwezi huu.\n\nZaka: {zaka}\nSadaka: {sadaka}\nMakambi: {makambi}\nShukrani: {shukrani}\nMchango mwingine: {mchango}\n\nTunathamini mchango wako na ushirikiano wako katika jamii yetu." }}
+                </textarea>
+            </div>
+            <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Template</button>
+        </form>
+    @endif
+</div>
+
+
 
                         {{-- ========================== RECEIPT SETTINGS ========================== --}}
                         <div class="tab-pane fade" id="receipts-section" role="tabpanel" aria-labelledby="receipts-tab">
-                            @if(auth()->user()->hasPermission('Settings'))
-                            <h5 class="fw-bold text-dark mb-3">Receipt Settings</h5>
-                            <form action="
-                            {{-- {{ route('settings.receipt.update') }} --}}
-                             " method="POST" enctype="multipart/form-data">
-                                @csrf
-                                <div class="mb-3">
-                                    <label class="form-label">Signature Image</label>
-                                    <input type="file" name="signature" class="form-control">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Footer Message</label>
-                                    <textarea name="footer_message" class="form-control" rows="3">{{ $receiptSettings->footer_message ?? '' }}</textarea>
-                                </div>
-                                <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Settings</button>
-                            </form>
-                            @endif
-                        </div>
+    @if(auth()->user()->hasPermission('Settings'))
+        <h5 class="fw-bold text-dark mb-3">Receipt Settings</h5>
+
+        <!-- Receipt Settings Form -->
+        <form action="
+        {{-- {{ route('settings.receipt.update') }} --}}
+         " method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-3">
+                <label class="form-label">Signature Image</label>
+                <input type="file" name="signature" class="form-control">
+            </div>
+
+            <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Settings</button>
+        </form>
+
+        <!-- Receipt Preview Section -->
+        <hr class="my-4">
+        <h5 class="fw-bold text-dark mb-3">Receipt Preview</h5>
+        <div class="mb-3">
+            <p>Click the button below to view the receipt format:</p>
+            <a href="{{ route('settings.receipt.preview') }}" target="_blank" class="btn btn-outline-success">
+                View Receipt Format
+            </a>
+        </div>
+    @endif
+</div>
+
 
                         {{-- ========================== SPENDING / EXPENSES ========================== --}}
                         <div class="tab-pane fade" id="spending-section" role="tabpanel" aria-labelledby="spending-tab">

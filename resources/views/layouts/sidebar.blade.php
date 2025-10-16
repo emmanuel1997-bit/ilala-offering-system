@@ -15,15 +15,12 @@
             $menuItems = [
                 ['route' => 'dashboard.admin', 'icon' => 'home', 'label' => 'Dashboard', 'permission' => 'Dashboard'],
                 ['route' => 'members.index', 'icon' => 'user-friends', 'label' => 'Members', 'permission' => 'Members'],
-                ['route' => 'offerings.index', 'icon' => 'hand-holding-usd', 'label' => 'Offerings', 'permission' => 'Offerings'],
-                ['route' => 'tithes.index', 'icon' => 'coins', 'label' => 'Tithes', 'permission' => 'Tithes'],
-                ['route' => 'thanksgiving.index', 'icon' => 'pray', 'label' => 'Thanksgiving', 'permission' => 'Thanksgiving'],
+                ['route' => 'stewardship.index', 'icon' => 'coins', 'label' => 'Stewardship', 'permission' => 'Tithes'],
                 ['route' => 'income.index', 'icon' => 'wallet', 'label' => 'Income', 'permission' => 'Income'],
                 ['route' => 'expenses.index', 'icon' => 'file-invoice-dollar', 'label' => 'Expenses', 'permission' => 'Expenses'],
                 ['route' => 'ministries.index', 'icon' => 'church', 'label' => 'Ministries', 'permission' => 'Ministries'],
                 ['route' => 'receipts.index', 'icon' => 'receipt', 'label' => 'Receipts', 'permission' => 'Receipts'],
-                ['route' => 'messages.index', 'icon' => 'envelope', 'label' => 'Messages', 'permission' => 'Messages'],
-                ['route' => 'users.settings', 'icon' => 'cogs', 'label' => 'Settings', 'permission' => 'Settings'],
+                 ['route' => 'users.settings', 'icon' => 'cogs', 'label' => 'Settings', 'permission' => 'Settings'],
                 ['route' => 'users.index', 'icon' => 'briefcase', 'label' => 'Management', 'permission' => 'Management'],
             ];
         @endphp
@@ -39,7 +36,7 @@
             @endif
         @endforeach
 
-        <div class="border-t border-green-700 my-4 mx-4"></div>
+        <div class="border-t border-white-700 my-4 mx-4"></div>
 
         <!-- Logout -->
         <li class="hover:bg-green-500 transition-all duration-200 mt-2 rounded-md">

@@ -5,6 +5,9 @@ use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SettingController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Member\MemberControler;
+use App\Http\Controllers\Member\MemberController;
+use App\Http\Controllers\Member\StewardShipController;
 use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\UserController;
 use Illuminate\Auth\Notifications\ResetPassword;
@@ -41,7 +44,7 @@ Route::get('/user/settings', [UserController::class, 'settings'])->name('users.s
 Route::resource('users', UserController::class);
 
 Route::resource('members', MemberController::class);
-Route::resource('offerings', OfferingController::class);
+Route::resource('stewardship', StewardShipController::class);
 Route::resource('tithes', TitheController::class);
 Route::resource('thanksgiving', ThanksgivingController::class);
 Route::resource('income', IncomeController::class);
@@ -53,7 +56,7 @@ Route::resource('settings', SettingController::class);
 
 Route::resource('users', UserController::class);
 
-Route::get('/receipt', [PdfController::class, 'generateReceipt']);
+Route::get('/receipt', [PdfController::class, 'generateReceipt'])->name('settings.receipt.preview');
 
 Route::get('locale/{lang}', function($lang){
     if (in_array($lang, ['en','sw'])) {
