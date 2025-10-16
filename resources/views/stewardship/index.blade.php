@@ -264,4 +264,29 @@
         }
     });
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabButtons = document.querySelectorAll('#contributionTab .nav-link');
+
+        // Restore active tab from localStorage
+        const activeTabId = localStorage.getItem('activeContributionTab');
+        if (activeTabId) {
+            const triggerEl = document.querySelector(`#${activeTabId}`);
+            if (triggerEl) {
+                new bootstrap.Tab(triggerEl).show();
+            }
+        }
+
+        // Save active tab on click
+        tabButtons.forEach(button => {
+            button.addEventListener('shown.bs.tab', function (event) {
+                localStorage.setItem('activeContributionTab', event.target.id);
+            });
+        });
+    });
+</script>
+
+
+
+
 @endsection

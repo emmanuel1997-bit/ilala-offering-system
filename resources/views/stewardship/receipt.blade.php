@@ -75,7 +75,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                                {{ $uncheckedReceipts->links() }}
+                                {{-- {{ $uncheckedReceipts->links() }} --}}
                             </div>
                         </div>
 
@@ -86,7 +86,7 @@
                                 @csrf
                                 <div class="mb-3">
                                     <button type="submit" class="btn btn-primary me-2">Send Message</button>
-                                    <button type="submit" formaction="{{ route('receipts.printSelected') }}" class="btn btn-secondary">Print Selected PDF</button>
+                                    <button type="button" onclick="window.open('{{ route('receipts.printSelected') }}', '_blank')" class="btn btn-secondary">Print Selected PDF</button>
                                 </div>
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped align-middle">
@@ -161,7 +161,7 @@
                                         @endforeach
                                     </tbody>
                                 </table>
-                                {{ $allReceipts->links() }}
+                                {{-- {{ $allReceipts->links() }} --}}
                             </div>
                         </div>
 
@@ -179,4 +179,32 @@
         document.querySelectorAll('input[name="receipts[]"]').forEach(cb => cb.checked = this.checked);
     });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get the saved tab ID from localStorage
+    const activeTab = localStorage.getItem("activeTab");
+    if (activeTab) {
+        const tabElement = document.querySelector(`#${activeTab}-tab`);
+        const tabContent = document.querySelector(`#${activeTab}-section`);
+        if (tabElement && tabContent) {
+            // Remove active from all tabs
+            document.querySelectorAll(".nav-link").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("show", "active"));
+
+            // Add active to the saved one
+            tabElement.classList.add("active");
+            tabContent.classList.add("show", "active");
+        }
+    }
+
+    // When a tab is clicked, save its ID
+    document.querySelectorAll('.nav-link').forEach(tab => {
+        tab.addEventListener('click', function () {
+            const id = this.getAttribute('id').replace('-tab', '');
+            localStorage.setItem('activeTab', id);
+        });
+    });
+});
+</script>
+
 @endsection

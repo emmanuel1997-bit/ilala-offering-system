@@ -18,7 +18,6 @@
                             ['id' => 'spending', 'icon' => 'wallet', 'label' => 'Spending / Expenses'],
                         ];
                     @endphp
-
                     <ul class="nav flex-column nav-pills py-3" id="settingsTab" role="tablist">
                         @foreach($tabs as $i => $tab)
                         <li class="nav-item mb-1" role="presentation">
@@ -128,9 +127,7 @@
                                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSSModal-{{ $ss->id }}">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <form action="
-                                                {{-- {{ route('school.destroy', $ss->id) }} --}}
-                                                 " method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                                <form action="#" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn btn-danger btn-sm">
@@ -175,9 +172,7 @@
                                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editContributionModal-{{ $type->id }}">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
-                                                <form action="
-                                                {{-- {{ route('contributions.destroy', $type->id) }} --}}
-                                                 " method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                                <form action="#" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
@@ -191,69 +186,48 @@
                             @endif
                         </div>
 
-                       {{-- ========================== RECEIPT MESSAGE TEMPLATE SECTION ========================== --}}
-<div class="tab-pane fade" id="messages-section" role="tabpanel" aria-labelledby="messages-tab">
-    @if(auth()->user()->hasPermission('Messages'))
-        <h5 class="fw-bold text-dark mb-3">Receipt Message Template</h5>
-
-        {{-- Info about placeholders --}}
-        <div class="alert alert-info">
-            <strong>Available placeholders:</strong>
-            <code>{name}</code>, <code>{zaka}</code>, <code>{sadaka}</code>,
-            <code>{makambi}</code>, <code>{shukrani}</code>, <code>{mchango}</code>
-        </div>
-
-        {{-- Template Form --}}
-        <form action="
-        {{-- {{ route('settings.receipt.message.update') }} --}}
-         " class="form-control" method="POST">
-            @csrf
-            
-            <div class="mb-3">
-                <label for="receipt_message" class="form-label">Receipt Message</label>
-                <!-- Inline styles to ensure text is visible regardless of global/theme CSS -->
-                <textarea name="receipt_message" id="receipt_message" class="form-control" rows="6" required
-                    style="color:#000 !important; background-color:#fff !important;">
-                    {{ $receiptMessage ?? "Shukrani {name} kwa mchango wako wa mwezi huu.\n\nZaka: {zaka}\nSadaka: {sadaka}\nMakambi: {makambi}\nShukrani: {shukrani}\nMchango mwingine: {mchango}\n\nTunathamini mchango wako na ushirikiano wako katika jamii yetu." }}
-                </textarea>
-            </div>
-            <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Template</button>
-        </form>
-    @endif
-</div>
-
-
+                        {{-- ========================== MESSAGES SECTION ========================== --}}
+                        <div class="tab-pane fade" id="messages-section" role="tabpanel" aria-labelledby="messages-tab">
+                            @if(auth()->user()->hasPermission('Messages'))
+                                <h5 class="fw-bold text-dark mb-3">Receipt Message Template</h5>
+                                <div class="alert alert-info">
+                                    <strong>Available placeholders:</strong>
+                                    <code>{name}</code>, <code>{zaka}</code>, <code>{sadaka}</code>,
+                                    <code>{makambi}</code>, <code>{shukrani}</code>, <code>{mchango}</code>
+                                </div>
+                                <form class="form-control" method="POST">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="receipt_message" class="form-label">Receipt Message</label>
+                                        <textarea name="receipt_message" id="receipt_message" class="form-control" rows="6" required
+                                            style="color:#000 !important; background-color:#fff !important;">
+                                            {{ $receiptMessage ?? "Shukrani {name} kwa mchango wako wa mwezi huu." }}
+                                        </textarea>
+                                    </div>
+                                    <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Template</button>
+                                </form>
+                            @endif
+                        </div>
 
                         {{-- ========================== RECEIPT SETTINGS ========================== --}}
                         <div class="tab-pane fade" id="receipts-section" role="tabpanel" aria-labelledby="receipts-tab">
-    @if(auth()->user()->hasPermission('Settings'))
-        <h5 class="fw-bold text-dark mb-3">Receipt Settings</h5>
-
-        <!-- Receipt Settings Form -->
-        <form action="
-        {{-- {{ route('settings.receipt.update') }} --}}
-         " method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-                <label class="form-label">Signature Image</label>
-                <input type="file" name="signature" class="form-control">
-            </div>
-
-            <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Settings</button>
-        </form>
-
-        <!-- Receipt Preview Section -->
-        <hr class="my-4">
-        <h5 class="fw-bold text-dark mb-3">Receipt Preview</h5>
-        <div class="mb-3">
-            <p>Click the button below to view the receipt format:</p>
-            <a href="{{ route('settings.receipt.preview') }}" target="_blank" class="btn btn-outline-success">
-                View Receipt Format
-            </a>
-        </div>
-    @endif
-</div>
-
+                            @if(auth()->user()->hasPermission('Settings'))
+                                <h5 class="fw-bold text-dark mb-3">Receipt Settings</h5>
+                                <form method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label class="form-label">Signature Image</label>
+                                        <input type="file" name="signature" class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Settings</button>
+                                </form>
+                                <hr class="my-4">
+                                <h5 class="fw-bold text-dark mb-3">Receipt Preview</h5>
+                                <a onclick="window.open('{{ route('receipts.printSelected') }}', '_blank')" target="_blank" class="btn btn-outline-success">
+                                    View Receipt Format
+                                </a>
+                            @endif
+                        </div>
 
                         {{-- ========================== SPENDING / EXPENSES ========================== --}}
                         <div class="tab-pane fade" id="spending-section" role="tabpanel" aria-labelledby="spending-tab">
@@ -297,12 +271,38 @@
                             </div>
                             @endif
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-@endsection
 
+<!-- ✅ Remember Active Tab Script -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const tabButtons = document.querySelectorAll('#settingsTab .nav-link');
+    const savedTab = localStorage.getItem('activeSettingsTab');
+
+    if (savedTab) {
+        const targetTab = document.querySelector(`#${savedTab}-tab`);
+        const targetSection = document.querySelector(`#${savedTab}-section`);
+        if (targetTab && targetSection) {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            targetTab.classList.add('active');
+            targetSection.classList.add('show', 'active');
+        }
+    }
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.id.replace('-tab', '');
+            localStorage.setItem('activeSettingsTab', id);
+        });
+    });
+});
+</script>
+@endsection

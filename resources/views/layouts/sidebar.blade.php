@@ -20,9 +20,11 @@
                 ['route' => 'expenses.index', 'icon' => 'file-invoice-dollar', 'label' => 'Expenses', 'permission' => 'Expenses'],
                 ['route' => 'ministries.index', 'icon' => 'church', 'label' => 'Ministries', 'permission' => 'Ministries'],
                 ['route' => 'receipts.index', 'icon' => 'receipt', 'label' => 'Receipts', 'permission' => 'Receipts'],
+                ['route' => 'announcements.index', 'icon' => 'bullhorn', 'label' => 'Announcements', 'permission' => 'Receipts'],
                  ['route' => 'users.settings', 'icon' => 'cogs', 'label' => 'Settings', 'permission' => 'Settings'],
                 ['route' => 'users.index', 'icon' => 'briefcase', 'label' => 'Management', 'permission' => 'Management'],
             ];
+        
         @endphp
 
         @foreach($menuItems as $item)

@@ -1,12 +1,17 @@
 <?php
 
+use App\Http\Controllers\Member\AnnouncementController;
 use App\Http\Controllers\Auth\HomeController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\SettingController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Member\IncomeController;
+use App\Http\Controllers\Member\ExpenseController;
 use App\Http\Controllers\Member\MemberControler;
 use App\Http\Controllers\Member\MemberController;
+use App\Http\Controllers\Member\MinistryController;
+use App\Http\Controllers\Member\ReceiptController;
 use App\Http\Controllers\Member\StewardShipController;
 use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\UserController;
@@ -45,14 +50,50 @@ Route::resource('users', UserController::class);
 
 Route::resource('members', MemberController::class);
 Route::resource('stewardship', StewardShipController::class);
-Route::resource('tithes', TitheController::class);
+
 Route::resource('thanksgiving', ThanksgivingController::class);
-Route::resource('income', IncomeController::class);
-Route::resource('expenses', ExpenseController::class);
 Route::resource('ministries', MinistryController::class);
 Route::resource('receipts', ReceiptController::class);
 Route::resource('messages', MessageController::class);
 Route::resource('settings', SettingController::class);
+
+
+
+// receipt
+Route::get('/receipts', [ReceiptController::class, 'index'])->name('receipts.index');
+Route::post('/receipts/verify/{id}', [ReceiptController::class, 'verify'])->name('receipts.verify');
+Route::post('/receipts/unverify/{id}', [ReceiptController::class, 'unverify'])->name('receipts.unverify');
+Route::post('/receipts/send-message', [ReceiptController::class, 'sendMessage'])->name('receipts.sendMessage');
+// Route::post('/receipts/print-selected', [ReceiptController::class, 'printSelected'])->name('receipts.printSelected');
+Route::post('/receipt', [PdfController::class, 'generateReceipt'])->name('receipts.printSelected');
+Route::get('/receipts/view/{id}', [ReceiptController::class, 'view'])->name('receipts.view');
+// end receipt
+
+
+// income
+
+Route::get('/income', [IncomeController::class, 'index'])->name('income.index');
+Route::post('/income', [IncomeController::class, 'store'])->name('income.store');
+Route::delete('/income/{income}', [IncomeController::class, 'destroy'])->name('income.destroy');
+// endincome
+
+// expenses 
+
+Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
+Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
+Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+Route::get('/expenses/export', [ExpenseController::class, 'export'])->name('expenses.export');
+
+// end expenses
+//ministry
+Route::get('/ministries', [MinistryController::class, 'index'])->name('ministries.index');
+// end ministry
+// anouncement 
+Route::get('announcements/', [AnnouncementController::class, 'index'])->name('announcements.index');
+Route::post('announcements/store', [AnnouncementController::class, 'store'])->name('announcements.store');
+Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+
+// end announcement 
 
 Route::resource('users', UserController::class);
 

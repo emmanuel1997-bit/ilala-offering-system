@@ -329,4 +329,26 @@ $(document).ready(function() {
     });
 });
 </script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Show tab from URL hash if exists
+    var hash = window.location.hash;
+    if(hash){
+        var triggerEl = document.querySelector(`.nav-link[href="${hash}"]`);
+        if(triggerEl){
+            var tab = new bootstrap.Tab(triggerEl);
+            tab.show();
+        }
+    }
+
+    // Update URL hash on tab change
+    var tabLinks = document.querySelectorAll('.nav-link[data-bs-toggle="pill"]');
+    tabLinks.forEach(function(link){
+        link.addEventListener('shown.bs.tab', function(e){
+            history.replaceState(null, null, e.target.getAttribute('href'));
+        });
+    });
+});
+</script>
+
 @endsection
