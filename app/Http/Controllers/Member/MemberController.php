@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
 
+use function Ramsey\Uuid\v1;
 
 class MemberController extends Controller
 {
@@ -35,9 +36,91 @@ class MemberController extends Controller
                 'photo' => null,
                 'ministry' => $ministries[1],
             ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+             (object) [
+                'id' => 2,
+                'full_name' => 'Jane Smith',
+                'phone_number' => '0723456789',
+                'gender' => 'Female',
+                'address' => 'Dodoma',
+                'photo' => null,
+                'ministry' => $ministries[1],
+            ],
+
             (object) [
                 'id' => 3,
-                'full_name' => 'Alice Johnson',
+                'full_name' => 'Alice Johnson jumanee',
                 'phone_number' => '0734567890',
                 'gender' => 'Female',
                 'address' => 'Arusha',
