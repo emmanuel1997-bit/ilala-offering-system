@@ -17,7 +17,7 @@
         .hero-overlay {
             background-color: rgba(0, 0, 0, 0.5);
         }
-        /* Smooth hide/show animation for navbar */
+        /* Smooth hide/show animation for dssnavbar */
         .navbar {
             transition: top 0.3s;
         }
