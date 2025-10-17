@@ -70,16 +70,38 @@
                         <div class="tab-pane fade show active" id="register-section" role="tabpanel" aria-labelledby="register-tab">
                             <h5 class="fw-bold text-dark mb-3">Register New Member</h5>
 
-                            <form action="{{ route('members.store') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                            <form id="registerMemberForm" action="{{ route('members.store') }}" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                                 @csrf
+
                                 <div class="row mb-3">
                                     <div class="col-md-6">
                                         <label class="form-label">Full Name</label>
                                         <input type="text" name="full_name" class="form-control" required>
+                                        <div class="invalid-feedback">Full Name is required.</div>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Phone Number</label>
-                                        <input type="text" name="phone_number" class="form-control" required>
+                                        <div class="input-group">
+                                            <input type="text" id="phone_number" name="phone_number" class="form-control" required>
+                                            <div class="invalid-feedback">Phone Number is required.</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Membership Number</label>
+                                        <input type="text" name="membership_number" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Marital Status</label>
+                                        <select name="marital_status" class="form-select" >
+                                            <option value="">Select Marital Status</option>
+                                            <option value="Single">Single</option>
+                                            <option value="Married">Married</option>
+                                            <option value="Divorced">Divorced</option>
+                                        </select>
+                                        <div class="invalid-feedback">Marital Status is required.</div>
                                     </div>
                                 </div>
 
@@ -102,30 +124,25 @@
                                             <option value="Male">Male</option>
                                             <option value="Female">Female</option>
                                         </select>
+                                        <div class="invalid-feedback">Gender is required.</div>
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Ministry</label>
-                                        <select name="ministry_id" class="form-select">
-                                            <option value="">Select Ministry</option>
-                                            @foreach($ministries as $ministry)
-                                                <option value="{{ $ministry->id }}">{{ $ministry->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <label class="form-label">Date of Baptism</label>
+                                        <input type="date" name="baptism_date" class="form-control">
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label">Sabbath School Class</label>
-                                        <select name="sabbath_school_id" class="form-select">
-                                            <option value="">Select SS Class</option>
-                                            @foreach($sabbathSchools as $ss)
-                                                <option value="{{ $ss->id }}">{{ $ss->name }}</option>
-                                            @endforeach
+                                        <label class="form-label">Baptism Status</label>
+                                        <select name="baptism_status" class="form-select">
+                                            <option value="Active">Active</option>
+                                            <option value="Inactive">Inactive</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Address</label>
-                                    <textarea name="address" rows="2" class="form-control" required></textarea>
+                                    <textarea name="address" rows="2" class="form-control" ></textarea>
+                                    <div class="invalid-feedback">Address is required.</div>
                                 </div>
 
                                 <div class="mb-3">
@@ -134,16 +151,23 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end">
-                                    <button type="submit" class="btn text-white" style="background-color:#064e3b;">
+                                    <button type="submit" class="btn text-white px-4" style="background-color:#064e3b;">
                                         <i class="fas fa-save me-1"></i> Save Member
                                     </button>
                                 </div>
                             </form>
                         </div>
 
-                       {{-- ====================== ALL MEMBERS SECTION ====================== --}}
-<div class="tab-pane fade" id="members-section" role="tabpanel" aria-labelledby="members-tab">
+                        {{-- ====================== ALL MEMBERS SECTION ====================== --}}
+                       <div class="tab-pane fade" id="members-section" role="tabpanel" aria-labelledby="members-tab">
     <h5 class="fw-bold text-dark mb-3">All Registered Members</h5>
+    <div class="d-flex mb-2">
+        <div class="ms-auto">
+            <button id="exportExcelBtn" class="btn btn-success btn-sm me-2">
+                <i class="fas fa-file-excel"></i> Export Excel
+            </button>
+        </div>
+    </div>
 
     <div class="table-responsive">
         <table class="table table-striped table-bordered align-middle" id="membersTable">
@@ -151,10 +175,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Email</th>
                     <th>Phone</th>
-                    <th>Ministry</th>
-                    <th>Sabbath School</th>
                     <th>Gender</th>
                     <th>Photo</th>
                     <th>Action</th>
@@ -165,190 +186,574 @@
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $member->full_name }}</td>
-                    <td>{{ $member->email ?? '-' }}</td>
                     <td>{{ $member->phone_number }}</td>
-                    <td>{{ $member->ministry->name ?? '-' }}</td>
-                    <td>{{ $member->sabbathSchool->name ?? '-' }}</td>
                     <td>{{ $member->gender }}</td>
+
+                    <!-- Photo with modal -->
                     <td>
                         @if($member->photo)
-                            <img src="{{ asset($member->photo) }}" alt="Photo" width="50" height="50" class="rounded-circle">
+                            <img src="{{ Storage::url($member->photo) }}" width="50" height="50" class="rounded-circle border" style="cursor:pointer;"
+                                 data-bs-toggle="modal" data-bs-target="#photoModal{{ $member->id }}">
+                            
+                            <div class="modal fade" id="photoModal{{ $member->id }}" tabindex="-1" aria-labelledby="photoModalLabel{{ $member->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="photoModalLabel{{ $member->id }}">{{ $member->full_name }}'s Photo</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <img src="{{ Storage::url($member->photo) }}" class="img-fluid rounded">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @else
                             <span class="text-muted">No Photo</span>
                         @endif
                     </td>
+
+                    <!-- Actions -->
                     <td>
-                        <button class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></button>
-                        <form action="{{ route('members.destroy', $member->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this member?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                        </form>
-                    </td>
+                        <!-- View -->
+                        <button type="button" class="btn btn-info btn-sm mb-1 view-member" data-member='@json($member)'>
+                            <i class="fas fa-eye"></i>
+                        </button>
+
+                        <!-- Edit -->
+                        <button type="button" class="btn btn-primary btn-sm mb-1 edit-member" data-member='@json($member)'>
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <!-- Reset PIN -->
+                        <button type="button" class="btn btn-secondary btn-sm mb-1 reset-pin" data-member-id="{{ $member->id }}">
+                            <i class="fas fa-key"></i>
+                        </button>
+
+                        <!-- Delete -->
+                       <form action="{{ route('members.destroy', $member->id) }}" method="POST" class="d-inline delete-member-form" data-member-id="{{ $member->id }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm mb-1">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+
+                    
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
 </div>
-{{-- ====================== SABBATH SCHOOL SECTION ====================== --}}
-<div class="tab-pane fade" id="ss-section" role="tabpanel" aria-labelledby="ss-tab">
 
-    <h5 class="fw-bold text-dark mb-3">Sabbath School Classes</h5>
+                        {{-- ====================== SABBATH SCHOOL SECTION ====================== --}}
+                        <div class="tab-pane fade" id="ss-section" role="tabpanel" aria-labelledby="ss-tab">
+                            <h5 class="fw-bold text-dark mb-3">Sabbath School Classes</h5>
 
-    {{-- Select Sabbath School --}}
-    <div class="row mb-3">
-        <div class="col-md-6">
-            <label class="form-label">Select Sabbath School Class</label>
-            <select id="ssSelect" class="form-select">
-                <option value="">-- Select Class --</option>
-                @foreach($sabbathSchools as $ss)
-                    <option value="{{ $ss->id }}">{{ $ss->name }}</option>
-                @endforeach
-            </select>
-        </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Select Sabbath School Class</label>
+                                    <select id="ssSelect" class="form-select">
+                                        <option value="">-- Select Class --</option>
+                                        @foreach($sabbathSchools as $ss)
+                                            <option value="{{ $ss->id }}">{{ $ss->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
 
-        <div class="col-md-6 d-flex align-items-end">
-            <button class="btn text-white ms-auto" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#addMemberToSSModal">
-                <i class="fas fa-user-plus me-1"></i> Add Member to Class
-            </button>
+                                <div class="col-md-6 d-flex align-items-end">
+                                    <button class="btn text-white ms-auto" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#addMemberToSSModal">
+                                        <i class="fas fa-user-plus me-1"></i> Add Member to Class
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped align-middle" id="ssMembersTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Name</th>
+                                            <th>Phone</th>
+                                            <th>Gender</th>
+                                            <th>Photo</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {{-- ====================== ADD MEMBER TO SABBATH SCHOOL MODAL ====================== --}}
+                        <div class="modal fade" id="addMemberToSSModal" tabindex="-1" aria-labelledby="addMemberToSSModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form id="addMemberToSSForm" method="POST" action="">
+                                        @csrf
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="addMemberToSSModalLabel">Add Member to Sabbath School</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <input type="hidden" name="ss_id" id="modalSsId">
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Select Member</label>
+                                                <select name="member_id" class="form-select" required>
+                                                    <option value="">-- Select Member --</option>
+                                                    @foreach($members as $member)
+                                                        <option value="{{ $member->id }}">{{ $member->full_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Assign Role</label>
+                                                <select name="role" class="form-select">
+                                                    <option value="">-- None --</option>
+                                                    <option value="Chairman">Chairman</option>
+                                                    <option value="Secretary">Secretary</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn text-white" style="background-color:#064e3b;">Add Member</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- end tab content -->
+                </div>
+            </div>
         </div>
     </div>
-
-    {{-- Members Table --}}
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped align-middle" id="ssMembersTable">
-            <thead class="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Gender</th>
-                    <th>Ministry</th>
-                    <th>Photo</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{-- Members will be dynamically populated via JS --}}
-            </tbody>
-        </table>
-    </div>
-
 </div>
 
-{{-- ====================== ADD MEMBER TO SABBATH SCHOOL MODAL ====================== --}}
-<div class="modal fade" id="addMemberToSSModal" tabindex="-1" aria-labelledby="addMemberToSSModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+
+{{-- Toast container --}}
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="memberToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="memberToastMessage"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+
+{{-- JS --}}
+
+
+<script>
+
+    $(document).ready(function() {
+    $('#membersTable').DataTable({
+        responsive: true,
+        pageLength: 10,
+        order: [[1, 'asc']],
+        columnDefs: [
+            { orderable: false, targets: [4,5] } // Photo and Action columns
+        ]
+    });
+});
+
+
+
+    // Sabbath School members load
+    $('#ssSelect').change(function() {
+        let ssId = $(this).val();
+        $('#modalSsId').val(ssId);
+        let tbody = $('#ssMembersTable tbody').empty();
+
+        if(ssId) {
+            $.get(`/sabbath-school/${ssId}/members`, function(data) {
+                data.forEach((member, index) => {
+                    tbody.append(`
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${member.full_name}</td>
+                            <td>${member.phone_number}</td>
+                            <td>${member.gender}</td>
+                            <td>${member.photo ? '<img src="'+member.photo+'" width="50" height="50" class="rounded-circle">' : '<span class="text-muted">No Photo</span>'}</td>
+                            <td>${member.role || '-'}</td>
+                            <td><button class="btn btn-danger btn-sm remove-member" data-member-id="${member.id}">Remove</button></td>
+                        </tr>
+                    `);
+                });
+            });
+        }
+    });
+
+    // Register member form AJAX
+    $('#registerMemberForm').submit(function(e){
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response){
+                window.showMemberToast(response.message || 'Saved', 'success');
+                $('#registerMemberForm')[0].reset();
+                $('#registerMemberForm').removeClass('was-validated');
+            },
+            error: function(xhr){
+                let msg = 'Failed to save member.';
+                if(xhr.responseJSON && xhr.responseJSON.errors){
+                    msg = Object.values(xhr.responseJSON.errors).flat().join(' ');
+                }
+                window.showMemberToast(msg, 'danger');
+            }
+        });
+    });
+
+    // expose a global toast helper so all scripts can use it
+    window.showMemberToast = function(message, type){
+        let toastEl = $('#memberToast');
+        toastEl.removeClass('bg-success bg-danger');
+        toastEl.addClass(type === 'success' ? 'bg-success' : 'bg-danger');
+        $('#memberToastMessage').text(message);
+        let toast = new bootstrap.Toast(toastEl[0]);
+        toast.show();
+    }
+
+</script>
+<!-- Consolidated scripts: form validation, phone init, and persistent tab handling -->
+<script>
+// Bootstrap form validation (unchanged)
+(function () {
+  'use strict'
+  var forms = document.querySelectorAll('.needs-validation')
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })
+})();
+
+// Phone number initializer (if available)
+setTimeout(() => {
+    if (typeof initiatePhoneNumber === 'function') {
+        initiatePhoneNumber("#phone_number");
+    }
+}, 1000);
+
+// Persist active member tab using Bootstrap tab API
+document.addEventListener('DOMContentLoaded', function () {
+    const tabButtons = document.querySelectorAll('#memberTab .nav-link');
+    const savedTab = localStorage.getItem('activeMemberTab');
+
+    // Restore saved tab (saved key is stored without the '-tab' suffix)
+    if (savedTab) {
+        const tabBtn = document.getElementById(`${savedTab}-tab`);
+        if (tabBtn) {
+            try {
+                // Use Bootstrap's Tab API to show the tab properly
+                new bootstrap.Tab(tabBtn).show();
+            } catch (e) {
+                // fallback: toggle classes
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('show', 'active'));
+                tabBtn.classList.add('active');
+                const pane = document.getElementById(`${savedTab}-section`);
+                if (pane) { pane.classList.add('show', 'active'); }
+            }
+        }
+    }
+
+    // Save tab to localStorage when shown (store id without '-tab')
+    tabButtons.forEach(btn => {
+        btn.addEventListener('shown.bs.tab', function (event) {
+            const id = event.target.id.replace('-tab', '');
+            localStorage.setItem('activeMemberTab', id);
+        });
+    });
+});
+</script>
+<!-- View Member Modal -->
+<div class="modal fade" id="viewMemberModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content">
-            <form id="addMemberToSSForm" method="POST" action="">
+            <div class="modal-header">
+                <h5 class="modal-title">Member Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-3">
+                    <img id="viewMemberPhoto" src="" class="rounded-circle" width="120" height="120">
+                </div>
+                <p><strong>Name:</strong> <span id="viewName"></span></p>
+                <p><strong>Phone:</strong> <span id="viewPhone"></span></p>
+                <p><strong>Email:</strong> <span id="viewEmail"></span></p>
+                <p><strong>Gender:</strong> <span id="viewGender"></span></p>
+                <p><strong>Address:</strong> <span id="viewAddress"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Member Modal -->
+<!-- Edit Member Modal -->
+<div class="modal fade" id="editMemberModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form id="editMemberForm" method="POST" enctype="multipart/form-data" action="">
                 @csrf
+                @method('PUT')
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addMemberToSSModalLabel">Add Member to Sabbath School</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Edit Member</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-                    <input type="hidden" name="ss_id" id="modalSsId">
+                    <input type="hidden" name="member_id" id="editMemberId">
 
-                    <div class="mb-3">
-                        <label class="form-label">Select Member</label>
-                        <select name="member_id" class="form-select" required>
-                            <option value="">-- Select Member --</option>
-                            @foreach($members as $member)
-                                <option value="{{ $member->id }}">{{ $member->full_name }}</option>
-                            @endforeach
-                        </select>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="full_name" id="editFullName" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" name="phone_number" id="editPhone" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Membership Number</label>
+                            <input type="text" name="membership_number" id="editMembershipNumber" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Marital Status</label>
+                            <select name="marital_status" id="editMaritalStatus" class="form-select">
+                                <option value="">Select Marital Status</option>
+                                <option value="Single">Single</option>
+                                <option value="Married">Married</option>
+                                <option value="Divorced">Divorced</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" id="editEmail" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" name="dob" id="editDOB" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Gender</label>
+                            <select name="gender" id="editGender" class="form-select" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Date of Baptism</label>
+                            <input type="date" name="baptism_date" id="editBaptismDate" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Baptism Status</label>
+                            <select name="baptism_status" id="editBaptismStatus" class="form-select">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Assign Role</label>
-                        <select name="role" class="form-select">
-                            <option value="">-- None --</option>
-                            <option value="Chairman">Chairman</option>
-                            <option value="Secretary">Secretary</option>
-                        </select>
+                        <label class="form-label">Address</label>
+                        <textarea name="address" id="editAddress" rows="2" class="form-control"></textarea>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Member Photo</label>
+                        <input type="file" name="photo" id="editPhoto" class="form-control" accept="image/*">
+                        <div class="mt-2">
+                            <img id="currentPhotoPreview" src="" width="80" height="80" class="rounded-circle">
+                        </div>
+                    </div>
+
                 </div>
-
                 <div class="modal-footer">
-                    <button type="submit" class="btn text-white" style="background-color:#064e3b;">Add Member</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-                    </div> <!-- end tab content -->
-                </div>
+
+<!-- Image preview modal -->
+<div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img id="previewImageLarge" src="" class="img-fluid">
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
-$('#ssSelect').change(function() {
-    let ssId = $(this).val();
-    $('#modalSsId').val(ssId); // update modal hidden input
-    let tbody = $('#ssMembersTable tbody');
-    tbody.empty();
-
-    if(ssId) {
-        $.get(`/sabbath-school/${ssId}/members`, function(data) {
-            data.forEach((member, index) => {
-                tbody.append(`
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${member.full_name}</td>
-                        <td>${member.phone_number}</td>
-                        <td>${member.gender}</td>
-                        <td>${member.ministry?.name || '-'}</td>
-                        <td>${member.photo ? '<img src="/'+member.photo+'" width="50" height="50" class="rounded-circle">' : '<span class="text-muted">No Photo</span>'}</td>
-                        <td>${member.role || '-'}</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm remove-member" data-member-id="${member.id}">Remove</button>
-                        </td>
-                    </tr>
-                `);
-            });
+$(document).ready(function(){
+        // View member
+        $(document).on('click', '.view-member', function(){
+                let m = $(this).data('member');
+                $('#viewName').text(m.full_name || '-');
+                $('#viewPhone').text(m.phone_number || '-');
+                $('#viewEmail').text(m.email || '-');
+                $('#viewGender').text(m.gender || '-');
+                $('#viewAddress').text(m.address || '-');
+                if(m.photo){
+                        $('#viewMemberPhoto').attr('src', m.photo.startsWith('http') ? m.photo : ('/storage/' + m.photo));
+                } else {
+                        $('#viewMemberPhoto').attr('src', '/storage/images/default-avatar.png');
+                }
+                new bootstrap.Modal(document.getElementById('viewMemberModal')).show();
         });
-    }
+
+        // Edit member (open modal and populate)
+      $(document).on('click', '.edit-member', function() {
+    let member = $(this).data('member');
+
+    $('#editMemberId').val(member.id);
+    $('#editFullName').val(member.full_name);
+    $('#editPhone').val(member.phone_number);
+    $('#editMembershipNumber').val(member.membership_number);
+    $('#editMaritalStatus').val(member.marital_status);
+    $('#editEmail').val(member.email);
+    $('#editDOB').val(member.dob);
+    $('#editGender').val(member.gender);
+    $('#editBaptismDate').val(member.baptism_date);
+    $('#editBaptismStatus').val(member.baptism_status);
+    $('#editAddress').val(member.address);
+    $('#currentPhotoPreview').attr('src', member.photo ? member.photo : '');
+    
+    // Update form action
+    $('#editMemberForm').attr('action', `/members/${member.id}`);
+    
+    // Show modal
+    $('#editMemberModal').modal('show');
 });
+
+
+        // Submit edit form via AJAX
+        $('#editMemberForm').submit(function(e){
+                e.preventDefault();
+                let form = this;
+                let action = $(form).attr('action');
+                let data = new FormData(form);
+                $.ajax({
+                        url: action,
+                        method: 'POST',
+                        data: data,
+                        processData: false,
+                        contentType: false,
+                success: function(res){
+                    window.showMemberToast(res.message || 'Member updated', 'success');
+                    setTimeout(function(){ location.reload(); }, 900);
+                },
+                error: function(xhr){
+                    let msg = 'Failed to update member.';
+                    if(xhr && xhr.responseJSON && xhr.responseJSON.errors){
+                        msg = Object.values(xhr.responseJSON.errors).flat().join(' ');
+                    }
+                    window.showMemberToast(msg, 'danger');
+                }
+                });
+        });
+
+        // Reset PIN
+        $(document).on('click', '.reset-pin', function(){
+                let memberId = $(this).data('member-id');
+                if(!confirm('Reset PIN for this member?')) return;
+        $.post(`/members/${memberId}/reset-pin`, {_token: '{{ csrf_token() }}'}, function(res){
+            window.showMemberToast(res.message || 'PIN reset', 'success');
+        }).fail(function(xhr){
+            let msg = 'Failed to reset PIN';
+            if(xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+            window.showMemberToast(msg, 'danger');
+        });
+        });
+
+        // Image click -> preview
+        $(document).on('click', 'td img', function(){
+                let src = $(this).attr('src');
+                if(src){
+                        $('#previewImageLarge').attr('src', src);
+                        new bootstrap.Modal(document.getElementById('imagePreviewModal')).show();
+                }
+        });
+});
+
+
 </script>
+
+
 <script>
 $(document).ready(function() {
-    $('#membersTable').DataTable({
-        responsive: true,
-        pageLength: 10,
-        order: [[1, 'asc']], // default sort by Name
-        columnDefs: [
-            { orderable: false, targets: [7,8] } // disable sorting for Photo and Action columns
-        ]
-    });
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Show tab from URL hash if exists
-    var hash = window.location.hash;
-    if(hash){
-        var triggerEl = document.querySelector(`.nav-link[href="${hash}"]`);
-        if(triggerEl){
-            var tab = new bootstrap.Tab(triggerEl);
-            tab.show();
-        }
+    function showToast(message, type = 'success') {
+        let toastEl = $('#memberToast');
+        toastEl.removeClass('bg-success bg-danger');
+        toastEl.addClass(type === 'success' ? 'bg-success' : 'bg-danger');
+        $('#memberToastMessage').text(message);
+        let toast = new bootstrap.Toast(toastEl[0]);
+        toast.show();
     }
 
-    // Update URL hash on tab change
-    var tabLinks = document.querySelectorAll('.nav-link[data-bs-toggle="pill"]');
-    tabLinks.forEach(function(link){
-        link.addEventListener('shown.bs.tab', function(e){
-            history.replaceState(null, null, e.target.getAttribute('href'));
+    // AJAX delete
+    $('.delete-member-form').submit(function(e) {
+        e.preventDefault();
+        if (!confirm('Delete this member?')) return;
+
+        let form = $(this);
+        let url = form.attr('action');
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: form.serialize(),
+            success: function(response) {
+                showToast('Member deleted successfully', 'success');
+                // Remove the deleted row from the table
+                form.closest('tr').fadeOut(500, function() { $(this).remove(); });
+            },
+            error: function(xhr) {
+                let msg = 'Failed to delete member.';
+                if(xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                showToast(msg, 'danger');
+            }
         });
     });
 });
 </script>
+
 
 @endsection

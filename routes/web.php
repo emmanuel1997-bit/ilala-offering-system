@@ -77,7 +77,7 @@ Route::post('/income', [IncomeController::class, 'store'])->name('income.store')
 Route::delete('/income/{income}', [IncomeController::class, 'destroy'])->name('income.destroy');
 // endincome
 
-// expenses 
+// expenses
 
 Route::get('/expenses', [ExpenseController::class, 'index'])->name('expenses.index');
 Route::post('/expenses', [ExpenseController::class, 'store'])->name('expenses.store');
@@ -88,12 +88,19 @@ Route::get('/expenses/export', [ExpenseController::class, 'export'])->name('expe
 //ministry
 Route::get('/ministries', [MinistryController::class, 'index'])->name('ministries.index');
 // end ministry
-// anouncement 
+// anouncement
 Route::get('announcements/', [AnnouncementController::class, 'index'])->name('announcements.index');
 Route::post('announcements/store', [AnnouncementController::class, 'store'])->name('announcements.store');
 Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 
-// end announcement 
+// end announcement
+
+// member
+Route::post('/members/store', [MemberController::class, 'members.store']);
+Route::put('/members/{id}', [MemberController::class, 'members.update']);
+Route::delete('/members/{id}', [MemberController::class, 'members.destroy']);
+
+// end member
 
 Route::resource('users', UserController::class);
 

@@ -24,16 +24,14 @@
     {{-- <link href="{{ asset('assets/css/bootstrap.min.css') }}" id="bootstrap-style" rel="stylesheet" type="text/css" /> --}}
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-..." crossorigin="anonymous">
-
 <!-- Bootstrap JS (requires Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/css/intlTelInput.min.css') }}">
 
-    <!-- Icons -->
-    {{-- <link href="{{ asset('assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" /> --}}
 
     <style>
 
@@ -292,7 +290,63 @@
             if (langMenu && !langMenu.contains(e.target)) langDropdown.classList.add('hidden');
             if (profileMenu && !profileMenu.contains(e.target)) profileDropdown.classList.add('hidden');
         });
+
+
+       
     </script>
+     @stack('scripts')
+   
+    <script src="{{ asset('assets/js/pages/dashboard.init.js') }}"></script>
+ 
+    <script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+    <script src="{{ asset('assets/js/intlTelInput.min.js') }}"></script>
+    <script src="{{ asset('assets/js/mask.js') }}"></script>
+    <script>
+         function initiatePhoneNumber(phoneInputID, phone = null) {
+            const input = document.querySelector(phoneInputID);
+            let iti = window.intlTelInput(input, {
+                formatOnDisplay: true,
+                preferredCountries: ["tz", 'bi', 'cd', 'cg', 'ke', 'rw', 'so', 'ug'],
+                utilsScript: "{{ asset('assets/js/utils.js') }}"
+            });
+
+            let phoneNumber = input.value;
+            if (phoneNumber != undefined) {
+                iti.setNumber("+" + phoneNumber);
+                var countryData = iti.getSelectedCountryData();
+                var initialCountryCode = countryData.iso2;
+                var initialCountryName = countryData.name;
+                iti.setCountry(initialCountryCode);
+            } else {
+                iti.setCountry("tz");
+            }
+
+            $(phoneInputID).on("countrychange", function(event) {
+                let selectedCountryData = iti.getSelectedCountryData();
+                const exampleNumber = intlTelInputUtils.getExampleNumber(
+                    selectedCountryData.iso2,
+                    true,
+                    intlTelInputUtils.numberFormat.INTERNATIONAL
+                );
+                $(this).attr("placeholder", exampleNumber);
+                // const numericExample = exampleNumber.replace(/\D/g, '');
+                const length = exampleNumber.length;
+                $(this).attr("maxlength", length);
+                $(this).attr("minlength", length);
+                const mask = exampleNumber.replace(/[1-9]/g, "0");
+                $(this).mask(mask);
+            });
+
+            $(phoneInputID).on('input keyup keydown', function() {
+                const fullNumber = iti.getNumber(intlTelInputUtils.numberFormat.E164);
+                $(phoneInputID + '_formated').val(fullNumber.replace('+', ''));
+            });
+
+            iti.promise.then(function() {
+                $(phoneInputID).trigger("countrychange");
+            });
+        }
+        </script>
 
 </body>
 </html>

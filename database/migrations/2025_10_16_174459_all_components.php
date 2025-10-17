@@ -44,6 +44,7 @@ return new class extends Migration
             $table->enum('membership_status', ['Active', 'Guest', 'Inactive'])->default('Active');
             $table->enum('baptism_status' ,['Active',  'Inactive'])->default('Active');
             $table->string('pin')->nullable();
+            $table->string('pin_fail_count')->nullable();
              $table->enum('pin_status' ,['Active', 'Pending', 'Inactive'])->default('Active');
             $table->date('baptism_date')->nullable();
             $table->string('marital_status')->nullable();
@@ -178,7 +179,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::table('messages', function (Blueprint $table) {
+        Schema::create('messages', function (Blueprint $table) {
            $table->id();
             $table->string('content')->nullable();
             $table->string('message_type')->nullable();
@@ -186,16 +187,15 @@ return new class extends Migration
     }
     public function down(): void
     {
-        Schema::dropIfExists('ministries');
-        Schema::dropIfExists('sabbath_schools');
-        Schema::dropIfExists('members');
-        Schema::dropIfExists('stewardships');
-        Schema::dropIfExists('incomes');
-        Schema::dropIfExists('sabbath_schools_has_members');
-        Schema::dropIfExists('ministries_has_leader');
-        Schema::dropIfExists('expenses');
+       Schema::dropIfExists('messages');
         Schema::dropIfExists('announcements');
-        Schema::dropIfExists('messages');
-        Schema::dropIfExists('mission_offerings');
+        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('ministries_has_leader');
+        Schema::dropIfExists('sabbath_schools_has_members');
+        Schema::dropIfExists('incomes');
+        Schema::dropIfExists('stewardships');
+        Schema::dropIfExists('members');
+        Schema::dropIfExists('sabbath_schools');
+        Schema::dropIfExists('ministries');
         }
     };
