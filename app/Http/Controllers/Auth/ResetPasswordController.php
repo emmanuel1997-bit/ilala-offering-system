@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class ResetPasswordController extends Controller
 {
@@ -42,6 +43,9 @@ class ResetPasswordController extends Controller
 
         // Log OTP for testing (remove in production)
         \Log::info("Password reset OTP for {$user->email}: $otp");
+             Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
+    $message->to($request->email)->subject('OTP');
+});
 
         // Store user email in session for OTP verification
         session(['password_reset_email' => $user->email]);
