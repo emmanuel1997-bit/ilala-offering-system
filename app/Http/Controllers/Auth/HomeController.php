@@ -9,6 +9,7 @@ use App\Models\Otp;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -41,6 +42,10 @@ class HomeController extends Controller
 
         // TODO: send OTP via email/SMS
         // sendSms($otp, $user->mobile);
+        Mail::raw("Your OTP is: $otp", function ($message) use ($request) {
+    $message->to($request->email)->subject('OTP');
+});
+
 
         session(['otp_user_id' => $user->id]);
 
