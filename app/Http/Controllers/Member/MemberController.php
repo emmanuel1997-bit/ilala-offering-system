@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Member;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Member;
+use App\Models\SabbathSchool;
 use Illuminate\Support\Facades\Validator;
 
 use function Ramsey\Uuid\v1;
@@ -19,17 +20,9 @@ class MemberController extends Controller
             (object) ['id' => 2, 'name' => 'Music Ministry', 'leader' => 'Jane Smith'],
             (object) ['id' => 3, 'name' => 'Outreach Ministry', 'leader' => 'Alice Johnson'],
         ]);
-
         $members = Member::get();
-
-
-        $sabbathSchools = collect([
-    (object) ['id' => 1, 'name' => 'Children SS'],
-    (object) ['id' => 2, 'name' => 'Youth SS'],
-    (object) ['id' => 3, 'name' => 'Adult SS'],
-]);
-
-        return view('member.index', compact('members', 'ministries', 'sabbathSchools'));
+        $schools = SabbathSchool::get();
+        return view('member.index', compact('members', 'ministries', 'schools'));
     }
 
 

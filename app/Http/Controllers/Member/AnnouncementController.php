@@ -12,36 +12,7 @@ class AnnouncementController extends Controller
 {
     public function index()
     {
-          $announcements = collect([
-        (object)[
-            'id' => 1,
-            'title' => 'Sunday Service Reminder',
-            'description' => 'Join us this Sunday at 9 AM for the main service.',
-            'publish_date' => '2025-10-20',
-            'image' => null, 
-        ],
-        (object)[
-            'id' => 2,
-            'title' => 'Bible Study Meeting',
-            'description' => 'Wednesday evening Bible study at 6 PM.',
-            'publish_date' => '2025-10-18',
-            'image' => null,
-        ],
-        (object)[
-            'id' => 3,
-            'title' => 'Charity Event',
-            'description' => 'Community charity event on Saturday. Bring donations!',
-            'publish_date' => '2025-10-25',
-            'image' => null,
-        ],
-        (object)[
-            'id' => 4,
-            'title' => 'Youth Camp',
-            'description' => 'Annual youth camp from Nov 1–5. Sign up at the office.',
-            'publish_date' => '2025-11-01',
-            'image' => null,
-        ],
-    ]);
+          $announcements = Announcement::orderBy('publish_date', 'desc')->get();
         return view('announcements.index', compact('announcements'));
     }
 
@@ -49,9 +20,11 @@ class AnnouncementController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'content' => 'required|string',
+             'category' => 'nullable|string',
             'publish_date' => 'required|date',
-            'image' => 'nullable|image|max:2048', // max 2MB
+            'is_published' => 'nullable|boolean',
+            'image_url' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('image')) {

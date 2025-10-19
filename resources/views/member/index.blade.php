@@ -175,7 +175,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th>Phone</th>
+                    <th>Membership ID</th>
                     <th>Gender</th>
                     <th>Photo</th>
                     <th>Action</th>
@@ -185,16 +185,15 @@
                 @foreach($members as $member)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td>{{ $member->full_name }}</td>
-                    <td>{{ $member->phone_number }}</td>
+                    <td>  <div> {{ $member->full_name }}</div><div>{{ $member->phone_number }}</div></td>
+                    <td>{{ $member->membership_number }}</td>
                     <td>{{ $member->gender }}</td>
 
-                    <!-- Photo with modal -->
                     <td>
                         @if($member->photo)
                             <img src="{{ Storage::url($member->photo) }}" width="50" height="50" class="rounded-circle border" style="cursor:pointer;"
                                  data-bs-toggle="modal" data-bs-target="#photoModal{{ $member->id }}">
-                            
+
                             <div class="modal fade" id="photoModal{{ $member->id }}" tabindex="-1" aria-labelledby="photoModalLabel{{ $member->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-sm">
                                     <div class="modal-content">
@@ -239,7 +238,7 @@
                         </button>
                     </form>
 
-                    
+
                 </tr>
                 @endforeach
             </tbody>
@@ -247,94 +246,8 @@
     </div>
 </div>
 
-                        {{-- ====================== SABBATH SCHOOL SECTION ====================== --}}
-                        <div class="tab-pane fade" id="ss-section" role="tabpanel" aria-labelledby="ss-tab">
-                            <h5 class="fw-bold text-dark mb-3">Sabbath School Classes</h5>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Select Sabbath School Class</label>
-                                    <select id="ssSelect" class="form-select">
-                                        <option value="">-- Select Class --</option>
-                                        @foreach($sabbathSchools as $ss)
-                                            <option value="{{ $ss->id }}">{{ $ss->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
 
-                                <div class="col-md-6 d-flex align-items-end">
-                                    <button class="btn text-white ms-auto" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#addMemberToSSModal">
-                                        <i class="fas fa-user-plus me-1"></i> Add Member to Class
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped align-middle" id="ssMembersTable">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Name</th>
-                                            <th>Phone</th>
-                                            <th>Gender</th>
-                                            <th>Photo</th>
-                                            <th>Role</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        {{-- ====================== ADD MEMBER TO SABBATH SCHOOL MODAL ====================== --}}
-                        <div class="modal fade" id="addMemberToSSModal" tabindex="-1" aria-labelledby="addMemberToSSModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <form id="addMemberToSSForm" method="POST" action="">
-                                        @csrf
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="addMemberToSSModalLabel">Add Member to Sabbath School</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-
-                                        <div class="modal-body">
-                                            <input type="hidden" name="ss_id" id="modalSsId">
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Select Member</label>
-                                                <select name="member_id" class="form-select" required>
-                                                    <option value="">-- Select Member --</option>
-                                                    @foreach($members as $member)
-                                                        <option value="{{ $member->id }}">{{ $member->full_name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label">Assign Role</label>
-                                                <select name="role" class="form-select">
-                                                    <option value="">-- None --</option>
-                                                    <option value="Chairman">Chairman</option>
-                                                    <option value="Secretary">Secretary</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="submit" class="btn text-white" style="background-color:#064e3b;">Add Member</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div> <!-- end tab content -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 {{-- Toast container --}}
@@ -350,7 +263,7 @@
 
 {{-- JS --}}
 
-
+@include('member.sabath-school')
 <script>
 
     $(document).ready(function() {
@@ -653,10 +566,10 @@ $(document).ready(function(){
     $('#editBaptismStatus').val(member.baptism_status);
     $('#editAddress').val(member.address);
     $('#currentPhotoPreview').attr('src', member.photo ? member.photo : '');
-    
+
     // Update form action
     $('#editMemberForm').attr('action', `/members/${member.id}`);
-    
+
     // Show modal
     $('#editMemberModal').modal('show');
 });

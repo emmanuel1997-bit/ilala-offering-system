@@ -12,8 +12,10 @@ use App\Http\Controllers\Member\MemberControler;
 use App\Http\Controllers\Member\MemberController;
 use App\Http\Controllers\Member\MinistryController;
 use App\Http\Controllers\Member\ReceiptController;
+
 use App\Http\Controllers\Member\StewardShipController;
 use App\Http\Controllers\Pdf\PdfController;
+use App\Http\Controllers\Member\SabbathSchoolController;
 use App\Http\Controllers\UserController;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Route;
@@ -88,12 +90,6 @@ Route::get('/expenses/export', [ExpenseController::class, 'export'])->name('expe
 //ministry
 Route::get('/ministries', [MinistryController::class, 'index'])->name('ministries.index');
 // end ministry
-// anouncement
-Route::get('announcements/', [AnnouncementController::class, 'index'])->name('announcements.index');
-Route::post('announcements/store', [AnnouncementController::class, 'store'])->name('announcements.store');
-Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
-
-// end announcement
 
 // member
 Route::post('/members/store', [MemberController::class, 'members.store']);
@@ -102,6 +98,21 @@ Route::delete('/members/{id}', [MemberController::class, 'members.destroy']);
 
 // end member
 
+//sabath school
+Route::post('/sabbath-schools/store', [SabbathSchoolController::class, 'store'])->name('sabbath-schools.store');
+Route::delete('/sabbath-schools/delete/{id}', [SabbathSchoolController::class, 'destroy'])->name('sabbath-schools.destroy');
+Route::put('/sabbath-schools/edit/{id}', [SabbathSchoolController::class, 'update'])->name('sabbath-schools.edit');
+Route::get('/sabbath-schools/view/{id}', [SabbathSchoolController::class, 'show'])->name('members.sabbath-schools.show');
+Route::post('sabbath-schools/{id}/add-member', [SabbathSchoolController::class, 'addMember'])->name('sabbath-schools.addMember');
+Route::delete('sabbath-schools/{school_id}/remove-member/{member_id}', [SabbathSchoolController::class, 'removeMember'])->name('sabbath-schools.removeMember');
+
+//end sabath school
+
+//anouncement
+Route::get('announcements/', [AnnouncementController::class, 'index'])->name('announcements.index');
+Route::post('announcements/store', [AnnouncementController::class, 'store'])->name('announcements.store');
+Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+Route::post('announcements/edit/{id}', [AnnouncementController::class, 'update'])->name('announcements.update');
 Route::resource('users', UserController::class);
 
 Route::get('/receipt', [PdfController::class, 'generateReceipt'])->name('settings.receipt.preview');

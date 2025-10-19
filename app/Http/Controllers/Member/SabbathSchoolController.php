@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Member;
-namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Models\Member;
 use App\Models\SabbathSchool;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,10 +13,14 @@ class SabbathSchoolController extends Controller
     /**
      * Display all Sabbath Schools.
      */
-    public function index()
+    public function show($id)
     {
-        $sabbathSchools = SabbathSchool::orderBy('name')->get();
-        return view('sabbath_school.index', compact('sabbathSchools'));
+        $school = SabbathSchool::findOrFail($id);
+
+
+    $allMembers = Member::get();
+     $members = $school->members()->orderBy('full_name')->get();
+        return view('member.int-sabbathschool', compact('school', 'allMembers','members'));
     }
 
     /**
@@ -84,4 +89,33 @@ class SabbathSchoolController extends Controller
 
         return response()->json(['message' => 'Sabbath School deleted successfully!'], 200);
     }
+
+
+
+
+public function addMember(Request $request, $id)
+{
+    $request->validate([
+        'member_id' => 'required|exists:members,id',
+        'role' => 'required|string|in:Chairman,Secretary,Spiritual Leader,Treasurer,Member',
+    ]);
+
+    $school = SabbathSchool::findOrFail($id);
+
+    $school->members()->syncWithoutDetaching([
+        $request->member_id => ['role' => $request->role]
+    ]);
+
+    return redirect()->back()->with('success', 'Member added successfully!');
+}
+
+public function removeMember($school_id, $member_id)
+{
+    $school = SabbathSchool::findOrFail($school_id);
+    $school->members()->detach($member_id);
+
+    return redirect()->back()->with('success', 'Member removed successfully!');
+}
+
+
 }

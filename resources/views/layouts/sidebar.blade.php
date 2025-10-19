@@ -24,7 +24,7 @@
                  ['route' => 'users.settings', 'icon' => 'cogs', 'label' => 'Settings', 'permission' => 'Settings'],
                 ['route' => 'users.index', 'icon' => 'briefcase', 'label' => 'Management', 'permission' => 'Management'],
             ];
-        
+
         @endphp
 
         @foreach($menuItems as $item)

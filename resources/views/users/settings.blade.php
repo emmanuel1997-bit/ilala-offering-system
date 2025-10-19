@@ -12,7 +12,6 @@
                         $tabs = [
                             ['id' => 'ministries', 'icon' => 'church', 'label' => 'Ministries'],
                             ['id' => 'contribution', 'icon' => 'hand-holding-usd', 'label' => 'Contribution Settings'],
-                            ['id' => 'school', 'icon' => 'school', 'label' => 'Sabbath School (SS)'],
                             ['id' => 'messages', 'icon' => 'envelope', 'label' => 'Messages'],
                             ['id' => 'receipts', 'icon' => 'file-signature', 'label' => 'Receipt Settings'],
                             ['id' => 'spending', 'icon' => 'wallet', 'label' => 'Spending / Expenses'],
@@ -98,50 +97,6 @@
                             @endif
                         </div>
 
-                        {{-- ========================== SABBATH SCHOOL SECTION ========================== --}}
-                        <div class="tab-pane fade" id="school-section" role="tabpanel" aria-labelledby="school-tab">
-                            @if(auth()->user()->hasPermission('Sabbath School'))
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="fw-bold text-dark">Sabbath School (SS)</h5>
-                                <button class="btn text-white btn-sm" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#createSSModal">
-                                    <i class="fas fa-plus me-1"></i> Add SS Class
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>SS Name</th>
-                                            <th>Description</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($schools as $ss)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $ss->name }}</td>
-                                            <td>{{ $ss->description }}</td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editSSModal-{{ $ss->id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="#" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
-                        </div>
 
                         {{-- ========================== CONTRIBUTION SETTINGS ========================== --}}
                         <div class="tab-pane fade" id="contribution-section" role="tabpanel" aria-labelledby="contribution-tab">

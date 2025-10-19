@@ -9,7 +9,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    steps:
+    steps:   # Deny access to hidden files
+    location ~ /\. {
+        deny all;
+    }
+
+    # Optional: increase upload size
+    client_max_body_size 100M;
+}
+
     # 1. Checkout repo
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -35,7 +43,7 @@ jobs:
         remote_key: ${{ secrets.SERVER_SSH_KEY }}
         path: "./"
         remote_path: ${{ secrets.SERVER_PATH }}
-        switches: "-avz --delete --exclude='.env' --exclude='storage/' --exclude='.git/' --exclude='bootstrap/cache/' --exclude='/public'  --no-perms --checksum"
+        switches: "-avz --delete --exclude='.env' --exclude='storage/' --exclude='.git/' --exclude='bootstrap/cache/'   --no-perms --checksum"
 
     # 5. Run Laravel Artisan commands
     - name: Run Laravel commands on server
