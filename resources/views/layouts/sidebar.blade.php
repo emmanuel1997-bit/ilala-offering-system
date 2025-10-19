@@ -28,15 +28,19 @@
         @endphp
 
         @foreach($menuItems as $item)
-            @if(auth()->user()->hasPermission($item['permission']))
+            {{-- @if(auth()->user()->hasPermission($item['permission'])) --}}
                 <li class="{{ request()->routeIs($item['route'] . '*') ? 'bg-green-600 text-white font-bold shadow-lg' : '' }} hover:bg-green-500 transition-all duration-200 rounded-md mt-2">
                     <a href="{{ route($item['route']) }}" class="flex items-center px-4 py-2">
                         <i class="fas fa-{{ $item['icon'] }} w-5"></i>
                         <span class="ml-3">{{ $item['label'] }}</span>
                     </a>
                 </li>
-            @endif
+            {{-- @endif --}}
         @endforeach
+
+
+
+
 
         <div class="border-t border-white-700 my-4 mx-4"></div>
 
