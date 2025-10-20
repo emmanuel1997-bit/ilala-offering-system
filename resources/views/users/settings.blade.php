@@ -50,182 +50,11 @@
 
                 <div class="card-body">
                     <div class="tab-content" id="settingsTabContent">
-
-                        {{-- ========================== MINISTRIES SECTION ========================== --}}
-                        <div class="tab-pane fade show active" id="ministries-section" role="tabpanel" aria-labelledby="ministries-tab">
-                            @if(auth()->user()->hasPermission('Ministries'))
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="fw-bold text-dark">Ministries</h5>
-                                <button class="btn text-white btn-sm" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#createMinistryModal">
-                                    <i class="fas fa-plus me-1"></i> Add Ministry
-                                </button>
-                            </div>
-
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Ministry Name</th>
-                                            <th>Description</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($ministries as $ministry)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $ministry->name }}</td>
-                                            <td>{{ $ministry->description }}</td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editMinistryModal-{{ $ministry->id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="{{ route('ministries.destroy', $ministry->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
-                        </div>
-
-
-                        {{-- ========================== CONTRIBUTION SETTINGS ========================== --}}
-                        <div class="tab-pane fade" id="contribution-section" role="tabpanel" aria-labelledby="contribution-tab">
-                            @if(auth()->user()->hasPermission('Settings'))
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="fw-bold text-dark">Contribution Types</h5>
-                                <button class="btn text-white btn-sm" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#createContributionModal">
-                                    <i class="fas fa-plus me-1"></i> Add Type
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Type</th>
-                                            <th>Description</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($contributions as $type)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $type->name }}</td>
-                                            <td>{{ $type->description }}</td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editContributionModal-{{ $type->id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <form action="#" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
-                        </div>
-
-                        {{-- ========================== MESSAGES SECTION ========================== --}}
-                        <div class="tab-pane fade" id="messages-section" role="tabpanel" aria-labelledby="messages-tab">
-                            @if(auth()->user()->hasPermission('Messages'))
-                                <h5 class="fw-bold text-dark mb-3">Receipt Message Template</h5>
-                                <div class="alert alert-info">
-                                    <strong>Available placeholders:</strong>
-                                    <code>{name}</code>, <code>{zaka}</code>, <code>{sadaka}</code>,
-                                    <code>{makambi}</code>, <code>{shukrani}</code>, <code>{mchango}</code>
-                                </div>
-                                <form class="form-control" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="receipt_message" class="form-label">Receipt Message</label>
-                                        <textarea name="receipt_message" id="receipt_message" class="form-control" rows="6" required
-                                            style="color:#000 !important; background-color:#fff !important;">
-                                            {{ $receiptMessage ?? "Shukrani {name} kwa mchango wako wa mwezi huu." }}
-                                        </textarea>
-                                    </div>
-                                    <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Template</button>
-                                </form>
-                            @endif
-                        </div>
-
-                        {{-- ========================== RECEIPT SETTINGS ========================== --}}
-                        <div class="tab-pane fade" id="receipts-section" role="tabpanel" aria-labelledby="receipts-tab">
-                            @if(auth()->user()->hasPermission('Settings'))
-                                <h5 class="fw-bold text-dark mb-3">Receipt Settings</h5>
-                                <form method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label class="form-label">Signature Image</label>
-                                        <input type="file" name="signature" class="form-control">
-                                    </div>
-                                    <button type="submit" class="btn text-white" style="background-color:#064e3b;">Save Settings</button>
-                                </form>
-                                <hr class="my-4">
-                                <h5 class="fw-bold text-dark mb-3">Receipt Preview</h5>
-                                <a onclick="window.open('{{ route('receipts.printSelected') }}', '_blank')" target="_blank" class="btn btn-outline-success">
-                                    View Receipt Format
-                                </a>
-                            @endif
-                        </div>
-
-                        {{-- ========================== SPENDING / EXPENSES ========================== --}}
-                        <div class="tab-pane fade" id="spending-section" role="tabpanel" aria-labelledby="spending-tab">
-                            @if(auth()->user()->hasPermission('Expenses'))
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="fw-bold text-dark">Expenses</h5>
-                                <button class="btn text-white btn-sm" style="background-color:#064e3b;" data-bs-toggle="modal" data-bs-target="#createExpenseModal">
-                                    <i class="fas fa-plus me-1"></i> Add Expense
-                                </button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped align-middle">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Item</th>
-                                            <th>Amount</th>
-                                            <th>Date</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($expenses as $expense)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $expense->item }}</td>
-                                            <td>{{ number_format($expense->amount, 2) }}</td>
-                                            <td>{{ $expense->date }}</td>
-                                            <td>
-                                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editExpenseModal-{{ $expense->id }}"><i class="fas fa-edit"></i></button>
-                                                <form action="{{ route('expenses.destroy', $expense->id) }}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @endif
-                        </div>
+                     @include('users.components.contribution')
+                     @include('users.components.message')
+                     @include('users.components.receipt')
+                     @include('users.components.spending')
+                     
                     </div>
                 </div>
             </div>
@@ -233,7 +62,48 @@
     </div>
 </div>
 
-<!-- ✅ Remember Active Tab Script -->
+
+{{-- toast_message --}}
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+     <div id="messageToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="messageToast"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+            </div>
+ </div>
+
+
+
+ 
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    @if(session('success'))
+        showToast("{{ session('success') }}", 'success');
+    @elseif(session('error'))
+        showToast("{{ session('error') }}", 'danger');
+    @elseif($errors->any())
+        showToast("{{ $errors->first() }}", 'danger');
+    @endif
+});
+
+function showToast(message, type = 'success') {
+    const toastEl = document.getElementById('messageToast');
+    const messageEl = document.getElementById('messageToast');
+
+    messageEl.textContent = message;
+
+    
+    toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning');
+    toastEl.classList.add(type === 'success' ? 'bg-success' : 'bg-danger');
+
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+}
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const tabButtons = document.querySelectorAll('#settingsTab .nav-link');
@@ -260,4 +130,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+
 @endsection

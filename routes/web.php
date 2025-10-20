@@ -16,7 +16,9 @@ use App\Http\Controllers\Member\ReceiptController;
 use App\Http\Controllers\Member\StewardShipController;
 use App\Http\Controllers\Pdf\PdfController;
 use App\Http\Controllers\Member\SabbathSchoolController;
+use App\Http\Controllers\Setting\ContributionTypeController;
 use App\Http\Controllers\UserController;
+use App\Models\ContributionType;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -113,6 +115,18 @@ Route::get('announcements/', [AnnouncementController::class, 'index'])->name('an
 Route::post('announcements/store', [AnnouncementController::class, 'store'])->name('announcements.store');
 Route::delete('announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 Route::post('announcements/edit/{id}', [AnnouncementController::class, 'update'])->name('announcements.update');
+
+// end annoumcent
+
+
+// contribution setting
+
+Route::post('contribution/store', [ContributionTypeController::class, 'store'])->name('contributions.store');
+Route::delete('contribution/{id}', [ContributionTypeController::class, 'destroy'])->name('contributions.destroy');
+Route::put('contribution/edit/{id}', [ContributionTypeController::class, 'update'])->name('contributions.update');
+
+// end contribution  setting
+
 Route::resource('users', UserController::class);
 
 Route::get('/receipt', [PdfController::class, 'generateReceipt'])->name('settings.receipt.preview');

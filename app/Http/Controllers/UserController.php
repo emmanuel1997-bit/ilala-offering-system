@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContributionType;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ class UserController extends Controller {
 
   public function settings() {
     $ministries = User::with('roles')->get();
-    $contributions = \App\Models\Role::all();
+    $contributions = ContributionType::get();
+    
     $messages = \App\Models\Role::all();
      $expenses = \App\Models\Role::all();
     return view('users.settings', compact('ministries', 'contributions', 'messages', 'expenses'));

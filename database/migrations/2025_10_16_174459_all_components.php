@@ -54,6 +54,14 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('contribution_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('contribution_name');
+            $table->integer('church_percentage');
+            $table->integer('conference_percentage');
+            $table->string('description')->nullable();
+            $table->timestamps();
+        });
 
           Schema::create('stewardships', function (Blueprint $table) {
             $table->id();
