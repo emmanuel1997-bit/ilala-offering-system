@@ -11,46 +11,38 @@ class Stewardship extends Model
 
     protected $fillable = [
         'member_id',
-        'type',
-        'other_description',
         'amount',
-        'date_given',
         'payment_method',
         'transaction_reference',
-        'receipt_number',
-        'tithe_amount',
-        'iof_offering_amount',
-        'campmeeting_amount',
-        'total_conference_amount',
-        'church_offering_amount',
-        'church_construction_amount',
-        'mission_offering_amount',
-        'other_amount',
-        'total_church_amount',
         'total_amount',
-        'notes',
+        'description',
         'is_verified',
         'verified_by',
         'recorded_by',
     ];
 
     protected $casts = [
-        'date_given' => 'date',
         'is_verified' => 'boolean',
     ];
 
+    // Relationships
     public function member()
     {
         return $this->belongsTo(Member::class);
     }
 
-    public function verifier()
+    public function verifiedBy()
     {
         return $this->belongsTo(User::class, 'verified_by');
     }
 
-    public function recorder()
+    public function recordedBy()
     {
         return $this->belongsTo(User::class, 'recorded_by');
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'stewardships_id');
     }
 }

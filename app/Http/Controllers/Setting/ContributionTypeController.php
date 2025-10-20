@@ -9,10 +9,11 @@ use App\Http\Controllers\Controller;
 
 class ContributionTypeController extends Controller
 {
-    
+
 
     public function store(Request $request)
     {
+        echo json_encode($request->all());
         $validated = $request->validate([
             'contribution_name' => 'required|string|max:255',
             'church_percentage' => 'required|integer|min:0|max:100',
@@ -25,7 +26,7 @@ class ContributionTypeController extends Controller
         return redirect()->back()->with('success', 'Contribution type created successfully.');
     }
 
-   
+
 
      public function update(Request $request, $id)
     {
@@ -44,7 +45,7 @@ class ContributionTypeController extends Controller
     }
     public function destroy( $id)
     {
-      
+
         $contribution=ContributionType::findOrFail($id);
         $contribution->delete();
 

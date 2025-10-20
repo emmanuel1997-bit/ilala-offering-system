@@ -127,6 +127,13 @@ Route::put('contribution/edit/{id}', [ContributionTypeController::class, 'update
 
 // end contribution  setting
 
+//stewardship
+Route::get('/stewardship', [StewardShipController::class, 'index'])->name('stewardship.index');
+Route::post('/stewardship', [StewardShipController::class, 'store'])->name('stewardship.store');
+Route::delete('/stewardship/{stewardship}', [StewardShipController::class, 'destroy'])->name('stewardship.destroy');
+
+//end  stewardship
+
 Route::resource('users', UserController::class);
 
 Route::get('/receipt', [PdfController::class, 'generateReceipt'])->name('settings.receipt.preview');

@@ -65,20 +65,7 @@ return new class extends Migration
 
           Schema::create('stewardships', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('member_id')->nullable()->constrained('members')->onDelete('set null');
-
-            $table->enum('type', [
-                'Tithe',
-                'Offering',
-                 'Tithe and Offering',
-                'Thanksgiving',
-                'Camp Meeting',
-                'Other'
-            ])->default('Tithe and Offering');
-            $table->string('other_description')->nullable();
-            $table->decimal('amount', 12, 2);
-            $table->date('date_given')->default(now());
             $table->enum('payment_method', [
                 'Cash',
                 'Bank',
@@ -88,22 +75,27 @@ return new class extends Migration
             ])->default('Cash');
             $table->string('transaction_reference')->nullable();
             $table->string('receipt_number')->nullable()->unique();
-            $table->string('tithe_amount')->nullable();
-            $table->string('iof_offering_amount')->nullable();
-            $table->string('campmeeting_amount')->nullable();
-            $table->string('total_conference_amount')->nullable();
-            $table->string('church_offering_amount')->nullable();
-            $table->string('church_construction_amount')->nullable();
-            $table->string('mission_offering_amount')->nullable();
-            $table->string('other_amount')->nullable();
-            $table->string('total_church_amount')->nullable();
             $table->string('total_amount')->nullable();
-            $table->text('notes')->nullable();
+            $table->string('description')->nullable();
             $table->boolean('is_verified')->default(false);
             $table->foreignId('verified_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('recorded_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamps();
+           });
+
+        Schema::create('transactions', function (Blueprint $table) {
+
+            $table->id();
+            $table->decimal('amount');
+            $table->foreignId('stewardships_id')->constrained('stewardships')->onDelete('cascade');
+            $table->foreignId('contribution_type_id')->constrained('contribution_types')->onDelete('cascade');
+
+              $table->timestamps();
+
         });
+
+
+
          Schema::create('incomes', function (Blueprint $table) {
             $table->id();
             $table->string('description')->nullable();
@@ -201,6 +193,7 @@ return new class extends Migration
         Schema::dropIfExists('ministries_has_leader');
         Schema::dropIfExists('sabbath_schools_has_members');
         Schema::dropIfExists('incomes');
+        Schema::dropIfExists('transactions');
         Schema::dropIfExists('stewardships');
         Schema::dropIfExists('members');
         Schema::dropIfExists('sabbath_schools');

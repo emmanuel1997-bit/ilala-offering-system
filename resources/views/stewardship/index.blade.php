@@ -13,6 +13,12 @@
                                 <i class="fas fa-plus me-2" style="color:#064e3b;"></i>Create Contribution
                             </button>
                         </li>
+
+                        <li class="nav-item mb-1">
+                            <button class="nav-link w-100 text-start" id="contributions-tab" data-bs-toggle="pill" data-bs-target="#contributions-section" type="button" role="tab" aria-controls="contributions-section" aria-selected="false">
+                                <i class="fas fa-list me-2" style="color:#064e3b;"></i>Contributions
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -32,7 +38,7 @@
                         {{-- ================= CREATE CONTRIBUTION ================= --}}
                         <div class="tab-pane fade show active" id="create-section" role="tabpanel" aria-labelledby="create-tab">
                             <h5 class="fw-bold text-dark mb-3">Create New Contribution</h5>
-                            <form method="POST" action="{{ route('contributions.store') }}" class="needs-validation" novalidate>
+                            <form method="POST" action="{{ route('stewardship.store') }}" class="needs-validation" novalidate>
                                 @csrf
 
                                 {{-- Select or Add Member --}}
@@ -130,6 +136,25 @@
                                     </div>
                                 </div>
 
+                                {{-- Payment Method & Reference --}}
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Payment Method</label>
+                                        <select name="payment_method" class="form-select" required>
+                                            <option value="Cash" selected>Cash</option>
+                                            <option value="Bank">Bank</option>
+                                            <option value="Mobile Money">Mobile Money</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Reference Number</label>
+                                        <input type="text" name="transaction_reference" class="form-control" placeholder="Enter reference number">
+                                    </div>
+                                </div>
+
                                 {{-- Date and Notes --}}
                                 <div class="row mb-3">
                                     <div class="col-md-6">
@@ -149,40 +174,158 @@
                                 </div>
                             </form>
                         </div>
-                    </div>
+
+                        {{-- ================= CONTRIBUTIONS LIST ================= --}}
+<div class="tab-pane fade" id="contributions-section" role="tabpanel" aria-labelledby="contributions-tab">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark">All Contributions</h5>
+
+        {{-- 🔎 Date Filter --}}
+        <form method="GET" action="{{ route('stewardship.index') }}" class="d-flex align-items-center gap-2">
+            <div>
+                <label class="form-label small mb-0">From</label>
+                <input type="date" name="from_date" value="{{ request('from_date') }}" class="form-control form-control-sm">
+            </div>
+            <div>
+                <label class="form-label small mb-0">To</label>
+                <input type="date" name="to_date" value="{{ request('to_date') }}" class="form-control form-control-sm">
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary btn-sm">Filter</button>
+            </div>
+        </form>
+    </div>
+
+    {{-- 🧾 Totals Summary --}}
+    @php
+        $churchTotal = 0;
+        $conferenceTotal = 0;
+        $typeTotals = array_fill_keys($contributionTypes->pluck('id')->toArray(), 0);
+        $grandTotal = 0;
+    @endphp
+
+    @foreach($stewardships as $stewardship)
+        @foreach($contributionTypes as $type)
+            @php
+                $transaction = $stewardship->transactions->firstWhere('contribution_type_id', $type->id);
+                $amount = $transaction->amount ?? 0;
+
+                // track totals
+                $typeTotals[$type->id] += $amount;
+                $churchTotal += $amount * ($type->church_percentage / 100);
+                $conferenceTotal += $amount * ($type->conference_percentage / 100);
+                $grandTotal += $amount;
+            @endphp
+        @endforeach
+    @endforeach
+
+    {{-- 🧮 Display Church & Conference Totals --}}
+    <div class="alert alert-light border rounded-3 mb-4 p-3">
+        <div class="row text-center">
+            <div class="col-md-4 mb-2 mb-md-0">
+                <h6 class="text-muted mb-1">Church Total</h6>
+                <h5 class="fw-bold text-success">{{ number_format($churchTotal, 2) }}</h5>
+            </div>
+            <div class="col-md-4 mb-2 mb-md-0">
+                <h6 class="text-muted mb-1">Conference Total</h6>
+                <h5 class="fw-bold text-primary">{{ number_format($conferenceTotal, 2) }}</h5>
+            </div>
+            <div class="col-md-4">
+                <h6 class="text-muted mb-1">Overall Total</h6>
+                <h5 class="fw-bold text-dark">{{ number_format($grandTotal, 2) }}</h5>
+            </div>
+        </div>
+    </div>
+
+    {{-- 📊 Main Table --}}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Member</th>
+                    @foreach($contributionTypes as $type)
+                        <th>{{ $type->contribution_name }}</th>
+                    @endforeach
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($stewardships as $index => $stewardship)
+                    @php $rowTotal = 0; @endphp
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $stewardship->member->full_name ?? 'N/A' }}</td>
+
+                        @foreach($contributionTypes as $type)
+                            @php
+                                $transaction = $stewardship->transactions->firstWhere('contribution_type_id', $type->id);
+                                $amount = $transaction->amount ?? 0;
+                                $rowTotal += $amount;
+                            @endphp
+                            <td>{{ $amount ? number_format($amount, 2) : '-' }}</td>
+                        @endforeach
+
+                        <td><strong>{{ number_format($rowTotal, 2) }}</strong></td>
+                    </tr>
+                @endforeach
+            </tbody>
+
+            <tfoot class="table-light fw-bold">
+                <tr>
+                    <td colspan="2" class="text-end">Grand Total:</td>
+                    @foreach($contributionTypes as $type)
+                        <td>{{ number_format($typeTotals[$type->id], 2) }}</td>
+                    @endforeach
+                    <td>{{ number_format($grandTotal, 2) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+
+
+                    </div> {{-- End tab content --}}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+{{-- ================= SCRIPTS ================= --}}
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const memberList = document.getElementById("memberList");
     const searchInput = document.getElementById("memberSearch");
-    const memberModalEl = document.getElementById("memberModal");
-    const memberModal = new bootstrap.Modal(memberModalEl);
 
-    // ✅ Search function — always active
-    if (searchInput) {
-        searchInput.addEventListener("input", function () {
-            const term = this.value.toLowerCase().trim();
-            const members = memberList.querySelectorAll(".member-item");
+    // ✅ Real-time search
+    searchInput.addEventListener("input", function () {
+        const term = this.value.toLowerCase().trim();
+        const members = memberList.querySelectorAll(".member-item");
+        let anyVisible = false;
 
-            members.forEach(member => {
-                const name = member.querySelector("strong")?.textContent.toLowerCase() || "";
-                const phone = member.querySelector("small")?.textContent.toLowerCase() || "";
-                member.style.display = (name.includes(term) || phone.includes(term)) ? "flex" : "none";
-            });
+        members.forEach(member => {
+            const name = member.querySelector("strong")?.textContent.toLowerCase() || "";
+            const phone = member.querySelector("small")?.textContent.toLowerCase() || "";
+            const visible = name.includes(term) || phone.includes(term);
+            member.style.display = visible ? "flex" : "none";
+            if (visible) anyVisible = true;
         });
-    }
 
-    // ✅ Focus input when modal opens
-    memberModalEl.addEventListener("shown.bs.modal", () => {
-        searchInput.focus();
+        const noResult = document.getElementById("noResultMsg");
+        if (!anyVisible && !noResult) {
+            const msg = document.createElement("div");
+            msg.id = "noResultMsg";
+            msg.className = "text-muted text-center mt-3";
+            msg.textContent = "No member found. Add a new one below.";
+            memberList.appendChild(msg);
+        } else if (anyVisible && noResult) {
+            noResult.remove();
+        }
     });
 
-    // ✅ Select member from list
+    // ✅ Select member
     memberList.addEventListener("click", function (e) {
         if (e.target.classList.contains("select-member-btn")) {
             const id = e.target.dataset.id;
@@ -191,7 +334,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             document.getElementById("selectedMemberId").value = id;
             document.getElementById("selectedMemberInfo").innerHTML = `<strong>${name}</strong> (${phone})`;
-
             closeModal();
         }
     });
@@ -214,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Remove old hidden fields
         document.querySelectorAll('input[name^="new_"]').forEach(el => el.remove());
 
-        // Add hidden inputs to form
+        // Add hidden inputs
         const form = document.querySelector("form");
         form.insertAdjacentHTML("beforeend", `
             <input type="hidden" name="new_full_name" value="${fullName}">
@@ -235,20 +377,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // ✅ Close modal properly
-    function closeModal() {
-        memberModal.hide();
-        setTimeout(() => {
-            document.body.classList.remove("modal-open");
-            document.querySelectorAll(".modal-backdrop").forEach(el => el.remove());
-        }, 300);
-    }
+   function closeModal() {
+    const modalElement = document.getElementById('memberModal');
+    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+    modalInstance.hide();
+
+    // Wait a bit for animation, then clean up classes
+    setTimeout(() => {
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = ''; // restore scrolling
+        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+    }, 400);
+}
+
 });
 </script>
-
-
-
-
-
-
 @endsection
