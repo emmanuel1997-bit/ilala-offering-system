@@ -80,42 +80,118 @@
                         </div>
 
                         {{-- ================= TODAY'S RECEIPTS ================= --}}
-                        <div class="tab-pane fade" id="today-section" role="tabpanel" aria-labelledby="today-tab">
-                            <h5 class="fw-bold text-dark mb-3">Today's Receipts</h5>
-                            <form action="{{ route('receipts.sendMessage') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <button type="submit" class="btn btn-primary me-2">Send Message</button>
-                                    <button type="button" onclick="window.open('{{ route('receipts.printSelected') }}', '_blank')" class="btn btn-secondary">Print Selected PDF</button>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th><input type="checkbox" id="checkAllToday"></th>
-                                                <th>#</th>
-                                                <th>Member</th>
-                                                <th>Amount</th>
-                                                <th>Status</th>
-                                                <th>Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($todaysReceipts as $receipt)
-                                                <tr>
-                                                    <td><input type="checkbox" name="receipts[]" value="{{ $receipt->id }}"></td>
-                                                    <td>{{ $loop->iteration }}</td>
-                                                    <td>{{ $receipt->member->full_name }}</td>
-                                                    <td>{{ $receipt->amount }}</td>
-                                                    <td>{{ $receipt->status }}</td>
-                                                    <td>{{ $receipt->created_at->format('Y-m-d') }}</td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </form>
-                        </div>
+       <div class="tab-pane fade" id="today-section" role="tabpanel" aria-labelledby="today-tab">
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-white border-bottom-0 pb-0">
+            <h4 class="fw-semibold text-dark mb-1">Today's Receipts</h4>
+            <p class="text-muted mb-0">View, print, and send messages for today's contributions.</p>
+        </div>
+
+        <div class="card-body">
+            {{-- ✅ Main Form to send checked IDs --}}
+            <form action="{{ route('receipts.sendMessage') }}" method="POST" id="todayForm">
+                @csrf
+                {{-- Action Buttons --}}
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div>
+                        <button type="submit" class="btn text-white" style="background-color:#064e3b;">
+                            <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </button>
+
+                        {{-- Print Selected --}}
+                        <button type="button"
+                            onclick="handlePrintSelected()"
+                            class="btn btn-outline-dark ms-2">
+                            <i class="fas fa-print me-2"></i>Print Selected PDF
+                        </button>
+                    </div>
+
+                    {{-- Search Filter --}}
+                    <div class="d-flex align-items-center">
+                        <input type="text" id="searchToday" class="form-control form-control-sm"
+                            placeholder="Search by name..." style="max-width: 250px;">
+                    </div>
+                </div>
+
+                {{-- 🧾 Totals --}}
+                @php
+                    $churchTotal = 0;
+                    $conferenceTotal = 0;
+                    $typeTotals = array_fill_keys($contributionTypes->pluck('id')->toArray(), 0);
+                    $grandTotal = 0;
+                @endphp
+
+                @foreach($stewardships as $stewardship)
+                    @foreach($contributionTypes as $type)
+                        @php
+                            $transaction = $stewardship->transactions->firstWhere('contribution_type_id', $type->id);
+                            $amount = $transaction->amount ?? 0;
+                            $typeTotals[$type->id] += $amount;
+                            $churchTotal += $amount * ($type->church_percentage / 100);
+                            $conferenceTotal += $amount * ($type->conference_percentage / 100);
+                            $grandTotal += $amount;
+                        @endphp
+                    @endforeach
+                @endforeach
+
+                {{-- 📊 Table --}}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th><input type="checkbox" id="checkAllToday" class="form-check-input"></th>
+                                <th>#</th>
+                                <th>Member</th>
+                                @foreach($contributionTypes as $type)
+                                    <th>{{ $type->contribution_name }}</th>
+                                @endforeach
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="todayTableBody">
+                            @foreach($stewardships as $index => $stewardship)
+                                @php $rowTotal = 0; @endphp
+                                <tr>
+                                    {{-- ✅ Use Stewardship ID for form submission --}}
+                                                            <td>
+                                    <input type="checkbox"
+                                        name="receipts[]"
+                                        value="{{ $stewardship->id }}"
+                                        class="form-check-input receipt-checkbox">
+                                </td>
+
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $stewardship->member->full_name ?? 'N/A' }}</td>
+
+                                    @foreach($contributionTypes as $type)
+                                        @php
+                                            $transaction = $stewardship->transactions->firstWhere('contribution_type_id', $type->id);
+                                            $amount = $transaction->amount ?? 0;
+                                            $rowTotal += $amount;
+                                        @endphp
+                                        <td>{{ $amount ? number_format($amount, 2) : '-' }}</td>
+                                    @endforeach
+
+                                    <td><strong>{{ number_format($rowTotal, 2) }}</strong></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+
+                        <tfoot class="table-light fw-bold">
+                            <tr>
+                                <td colspan="2" class="text-end">Grand Total:</td>
+                                @foreach($contributionTypes as $type)
+                                    <td>{{ number_format($typeTotals[$type->id], 2) }}</td>
+                                @endforeach
+                                <td>{{ number_format($grandTotal, 2) }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
                         {{-- ================= ALL RECEIPTS ================= --}}
                         <div class="tab-pane fade" id="all-section" role="tabpanel" aria-labelledby="all-tab">
@@ -205,6 +281,26 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+</script>
+<script>
+    // Select/Deselect All
+    document.getElementById('checkAllToday').addEventListener('change', function() {
+        document.querySelectorAll('.receipt-checkbox').forEach(cb => cb.checked = this.checked);
+    });
+
+    // Handle Print Selected PDF
+    function handlePrintSelected() {
+        const form = document.getElementById('todayForm');
+        const selected = Array.from(form.querySelectorAll('.receipt-checkbox:checked')).map(cb => cb.value);
+
+        if (selected.length === 0) {
+            alert("Please select at least one receipt to print.");
+            return;
+        }
+        // Build URL with selected IDs as query parameters
+        const url = `{{ route('receipts.printSelected') }}?ids=${selected.join(',')}`;
+        window.open(url, '_blank');
+    }
 </script>
 
 @endsection

@@ -91,21 +91,21 @@
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
                                                         <label class="form-label">Full Name</label>
-                                                        <input type="text" id="new_full_name" class="form-control">
+                                                        <input type="text" name="new_full_name"  id="new_full_name" class="form-control">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">Phone Number</label>
-                                                        <input type="text" id="new_phone_number" class="form-control">
+                                                        <input type="text" name="new_phone_number" id="new_phone_number" class="form-control">
                                                     </div>
                                                 </div>
                                                 <div class="row mb-3">
                                                     <div class="col-md-6">
                                                         <label class="form-label">Email</label>
-                                                        <input type="email" id="new_email" class="form-control">
+                                                        <input type="email" name="new_email" id="new_email" class="form-control">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label">Date of Birth</label>
-                                                        <input type="date" id="new_dob" class="form-control">
+                                                        <input type="date" name="new_dob" id="new_dob" class="form-control">
                                                     </div>
                                                 </div>
                                                 <button type="button" id="saveNewMember" class="btn text-white" style="background-color:#064e3b;">

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Member;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContributionType;
+use App\Models\Stewardship;
 use Illuminate\Http\Request;
 
 class ReceiptController extends Controller
@@ -30,11 +32,15 @@ class ReceiptController extends Controller
             return $r->created_at->isToday();
         });
         $allReceipts = $receipts;
+        $stewardships = Stewardship::with('member', 'transactions.contributionType')->get();
+        $contributionTypes=ContributionType::all();
 
         return view('stewardship.receipt', compact(
             'uncheckedReceipts',
             'todaysReceipts',
-            'allReceipts'
+            'allReceipts',
+            'stewardships',
+            'contributionTypes'
         ));
     }
 

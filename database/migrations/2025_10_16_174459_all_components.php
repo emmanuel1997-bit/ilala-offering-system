@@ -87,8 +87,8 @@ return new class extends Migration
 
             $table->id();
             $table->decimal('amount');
-            $table->foreignId('stewardships_id')->constrained('stewardships')->onDelete('cascade');
-            $table->foreignId('contribution_type_id')->constrained('contribution_types')->onDelete('cascade');
+            $table->foreignId('stewardships_id')->nullable()->constrained('stewardships')->onDelete('cascade');
+            $table->foreignId('contribution_type_id')->nullable()->constrained('contribution_types')->onDelete('cascade');
 
               $table->timestamps();
 

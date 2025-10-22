@@ -26,6 +26,7 @@ class StewardShipController extends Controller
     $stewardships = $query->get();
     $contributionTypes = ContributionType::all();
      $members = Member::get();
+    
 
     return view('stewardship.index', compact('members','stewardships', 'contributionTypes'));
 }

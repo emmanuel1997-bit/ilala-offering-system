@@ -22,6 +22,11 @@ use App\Models\ContributionType;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
+Route::prefix('api')->group(function () {
+    require __DIR__.'/api.php';
+});
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -55,10 +60,10 @@ Route::resource('users', UserController::class);
 Route::resource('members', MemberController::class);
 Route::resource('stewardship', StewardShipController::class);
 
-Route::resource('thanksgiving', ThanksgivingController::class);
+// Route::resource('thanksgiving', ThanksgivingController::class);
 Route::resource('ministries', MinistryController::class);
 Route::resource('receipts', ReceiptController::class);
-Route::resource('messages', MessageController::class);
+// Route::resource('messages', MessageController::class);
 Route::resource('settings', SettingController::class);
 
 
