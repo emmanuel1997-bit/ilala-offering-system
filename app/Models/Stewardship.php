@@ -15,6 +15,7 @@ class Stewardship extends Model
         'payment_method',
         'transaction_reference',
         'total_amount',
+        'attachment_image_url',
         'description',
         'is_verified',
         'verified_by',

@@ -75,6 +75,7 @@ return new class extends Migration
             ])->default('Cash');
             $table->string('transaction_reference')->nullable();
             $table->string('receipt_number')->nullable()->unique();
+            $table->string('attachment_image_url')->nullable();
             $table->string('total_amount')->nullable();
             $table->string('description')->nullable();
             $table->boolean('is_verified')->default(false);
