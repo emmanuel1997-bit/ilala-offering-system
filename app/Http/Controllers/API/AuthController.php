@@ -21,7 +21,7 @@ public function sendConsent(Request $request)
     ]);
 
     // Check if the member exists
-    $member = Member::where('phone', $request->phone)->first();
+    $member = Member::where('phone_number', $request->phone)->first();
 
     if (!$member) {
         // Member not found
