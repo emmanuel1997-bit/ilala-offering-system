@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -31,15 +32,15 @@ public function sendConsent(Request $request)
         ], 404);
     }
 
-    // Generate OTP
+
     $code = rand(100000, 999999);
 
     Otp::create([
-        'user_id' => $member->id, // store member ID, not phone
+        'user_id' => $member->id,
         'otp' => $code,
         'expires_at' => Carbon::now()->addMinutes(5),
     ]);
-
+     Log::inf($code);
     return response()->json([
         'status' => true,
         'message' => 'OTP sent successfully.'
