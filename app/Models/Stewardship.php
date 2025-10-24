@@ -19,6 +19,15 @@ class Stewardship extends Model
         'description',
         'is_verified',
         'verified_by',
+        'recorded_by',   'member_id',
+        'amount',
+        'payment_method',
+        'transaction_reference',
+        'total_amount',
+        'attachment_image_url',
+        'description',
+        'is_verified',
+        'verified_by',
         'recorded_by',
     ];
 
