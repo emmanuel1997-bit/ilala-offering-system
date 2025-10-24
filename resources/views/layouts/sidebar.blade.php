@@ -7,7 +7,7 @@
         <img src="{{ asset('storage/images/steward.png') }}" alt="Ilala SDA Logo" class="w-16 h-16 rounded-full mb-2">
         <h2 class="text-lg font-bold text-white">Ilala SDA</h2>
     </div>
-import 'app_colors.dart';
+
     <!-- Sidebar Menu -->
     <ul class="mt-6 pb-6 text-white">
 
