@@ -54,7 +54,7 @@ public function sendConsent(Request $request)
     {
         $request->validate(['phone' => 'required', 'code' => 'required']);
 
-        $latestOtp = Otp::where('phone', $request->phone)
+        $latestOtp = Otp::where('user_id', $request->phone)
         ->orderBy('created_at', 'desc')
         ->first();
         if (!$latestOtp || $latestOtp->otp !== $request->code || Carbon::now()->greaterThan($latestOtp->expires_at)) {
