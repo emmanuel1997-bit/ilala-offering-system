@@ -73,7 +73,7 @@ public function sendConsent(Request $request)
         $user = Member::where('phone_number', $request->phone)->first();
         $user->pin = Hash::make($request->pin);
         $user->save();
-        return response()->json(['status' => true, 'message' => 'PIN set successfully']);
+        return response()->json(['status' => true, 'message' => 'PIN set successfully','user' => $user]);
     }
 
     public function verifyPin(Request $request)
