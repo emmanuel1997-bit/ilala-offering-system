@@ -12,17 +12,39 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function sendConsent(Request $request)
-    {
-        $request->validate(['phone' => 'required|string']);
-        $code = rand(100000, 999999);
-        Otp::create([
-            'user_id' => $request->phone,
-            'otp' => $code,
-            'expires_at' => Carbon::now()->addMinutes(5),
-        ]);
-        return response()->json(['status' => true]);
+
+public function sendConsent(Request $request)
+{
+    // Validate the incoming request
+    $request->validate([
+        'phone' => 'required|string',
+    ]);
+
+    // Check if the member exists
+    $member = Member::where('phone', $request->phone)->first();
+
+    if (!$member) {
+        // Member not found
+        return response()->json([
+            'status' => false,
+            'message' => 'Member not found with this phone number.'
+        ], 404);
     }
+
+    // Generate OTP
+    $code = rand(100000, 999999);
+
+    Otp::create([
+        'user_id' => $member->id, // store member ID, not phone
+        'otp' => $code,
+        'expires_at' => Carbon::now()->addMinutes(5),
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'OTP sent successfully.'
+    ]);
+}
 
     public function verifyConsent(Request $request)
     {
