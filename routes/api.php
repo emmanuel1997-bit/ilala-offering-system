@@ -6,7 +6,7 @@ use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\AnnouncementController;
 use App\Http\Controllers\API\ReceiptController;
 use App\Http\Controllers\API\ContributionController;
-Route::middleware('api')->group(function () {
+
     // Test route
     Route::get('/test', fn() => response()->json(['message' => 'API working!']));
 
@@ -34,4 +34,4 @@ Route::middleware('api')->group(function () {
     Route::get('/contributions/types', [ContributionController::class, 'types']);
     Route::post('/contributions', [ContributionController::class, 'store']);
 
-});
+
