@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -40,7 +41,9 @@ public function sendConsent(Request $request)
         'otp' => $code,
         'expires_at' => Carbon::now()->addMinutes(5),
     ]);
-     Log::inf($code);
+       Mail::raw("Your OTP is: $code", function ($message) use ($request) {
+    $message->to("emanuelernestjuma@gmail.com")->subject('OTP');
+});
     return response()->json([
         'status' => true,
         'message' => 'OTP sent successfully.'
