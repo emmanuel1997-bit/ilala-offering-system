@@ -22,9 +22,7 @@ use App\Models\ContributionType;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
-Route::prefix('api')->group(function () {
-    require __DIR__.'/api.php';
-});
+
 
 
 Route::get('/', function () {

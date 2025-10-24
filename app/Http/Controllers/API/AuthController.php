@@ -15,16 +15,12 @@ class AuthController extends Controller
     public function sendConsent(Request $request)
     {
         $request->validate(['phone' => 'required|string']);
-
         $code = rand(100000, 999999);
-
-
         Otp::create([
             'user_id' => $request->phone,
             'otp' => $code,
             'expires_at' => Carbon::now()->addMinutes(5),
         ]);
-
         return response()->json(['status' => true]);
     }
 
