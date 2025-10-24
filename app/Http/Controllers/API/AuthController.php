@@ -37,7 +37,7 @@ public function sendConsent(Request $request)
     $code = rand(100000, 999999);
 
     Otp::create([
-        'user_id' => $member->id,
+        'user_id' => $member->phone_number,
         'otp' => $code,
         'expires_at' => Carbon::now()->addMinutes(5),
     ]);
