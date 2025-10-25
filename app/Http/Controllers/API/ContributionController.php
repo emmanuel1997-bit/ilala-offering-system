@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class ContributionController extends Controller
 {
- public function type()
+ public function types()
  {
 $type =ContributionType::get();
  return response()->json([
